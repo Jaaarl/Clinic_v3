@@ -91,7 +91,9 @@ const InventoryLogComponent = () => {
       params.append('page', filters.page.toString());
       params.append('limit', filters.limit.toString());
 
-      const response = await fetch(`/api/inventory-logs?${params}`);
+      const response = await fetch(`/api/inventory-logs?${params}`, {
+        cache: "no-store",
+      });
       
       if (!response.ok) {
         throw new Error('Failed to fetch logs');

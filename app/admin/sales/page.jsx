@@ -42,7 +42,9 @@ export default function SalesDashboard() {
       params.append("page", currentPage);
       params.append("itemsPerPage", itemsPerPage);
 
-      const response = await fetch(`/api/inventory-logs/sales?${params}`);
+      const response = await fetch(`/api/inventory-logs/sales?${params}`, {
+        cache: "no-store",
+      });
       const data = await response.json();
       setSalesData(data);
     } catch (error) {

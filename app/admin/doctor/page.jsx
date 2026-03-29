@@ -8,7 +8,9 @@ const DoctorsList = () => {
 
   useEffect(() => {
     const fetchDoctors = async () => {
-      const response = await fetch("/api/doctor");
+      const response = await fetch("/api/doctor", {
+        cache: "no-store",
+      });
       const data = await response.json();
       if (response.ok) {
         setDoctors(data.doctors);
