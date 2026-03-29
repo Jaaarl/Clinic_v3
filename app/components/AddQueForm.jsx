@@ -5,6 +5,7 @@ export default function AddQueForm({
   id,
   name1,
   gender1,
+  birthday1,
   contact1,
   medical_history1,
   medication1,
@@ -12,7 +13,7 @@ export default function AddQueForm({
 }) {
   const [name, setName] = useState(name1);
   const [gender, setGender] = useState(gender1);
-  const [birthday, setBirthday] = useState();
+  const [birthday, setBirthday] = useState(birthday1);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [contact, setContact] = useState({
@@ -52,7 +53,7 @@ export default function AddQueForm({
         reseta: visit.form.reseta || "",
         labReq: visit.form.labReq || "",
       },
-    }))
+    })),
   );
 
   const handleKeyPress = (e) => {
