@@ -198,6 +198,8 @@ export default function EditQueForm({
     } catch (error) {
       console.error(error);
       alert("An error occurred while updating the patient information.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
