@@ -1,6 +1,5 @@
 import { queueService } from "@/lib/services/queueService";
 import { corsResponse, handleOptions } from "@/lib/utils/cors";
-import { validateRequired } from "@/lib/utils/validation";
 
 export async function OPTIONS() { return handleOptions(); }
 
@@ -17,13 +16,11 @@ export async function GET() {
 export async function POST(request) {
   try {
     const data = await request.json();
-    const { valid, missing } = validateRequired(data, ["referenceId"]);
-    if (!valid) return corsResponse({ error: `Missing required fields: ${missing.join(", ")}` }, 400);
     const result = await queueService.addToQueue(data);
     return corsResponse({ queueEntry: result.queueEntry, queueNumber: result.queueNum }, 201);
   } catch (error) {
     console.error("Error creating queue entry:", error);
-    return corsResponse({ error: "Failed to create queue entry" }, 500);
+    return corsResponse({ error: error.message || "Failed to create queue entry" }, 400);
   }
 }
 

@@ -1,6 +1,5 @@
 import { patientService } from "@/lib/services/patientService";
 import { corsResponse, handleOptions } from "@/lib/utils/cors";
-import { validateRequired } from "@/lib/utils/validation";
 
 export async function OPTIONS() { return handleOptions(); }
 
@@ -19,13 +18,11 @@ export async function GET(request) {
 export async function POST(request) {
   try {
     const data = await request.json();
-    const { valid, missing } = validateRequired(data, ["name", "gender"]);
-    if (!valid) return corsResponse({ error: `Missing required fields: ${missing.join(", ")}` }, 400);
     const patient = await patientService.createPatient(data);
     return corsResponse({ message: "Patient Created", patient }, 201);
   } catch (error) {
     console.error("Error creating patient:", error);
-    return corsResponse({ error: "Failed to create patient" }, 500);
+    return corsResponse({ error: error.message || "Failed to create patient" }, 400);
   }
 }
 
