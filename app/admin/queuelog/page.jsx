@@ -18,7 +18,9 @@ export default function QueueFilterPage() {
     setError("");
 
     try {
-      const response = await fetch("/api/queue-numbers");
+      const response = await fetch("/api/queue-numbers", {
+        cache: "no-store",
+      });
       if (!response.ok) {
         throw new Error("Failed to fetch queue data");
       }

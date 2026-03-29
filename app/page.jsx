@@ -28,7 +28,9 @@ export default function Home() {
     e.preventDefault();
 
     try {
-      const response = await fetch(`/api/patient?search=${query}`);
+      const response = await fetch(`/api/patient?search=${query}`, {
+        cache: "no-store",
+      });
       if (!response.ok) throw new Error("Failed to fetch patients");
       const data = await response.json();
       setPatients(data.patients);
