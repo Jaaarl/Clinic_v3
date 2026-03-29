@@ -3,13 +3,12 @@ import React from "react";
 import Navbar from "@/app/components/Navbar";
 const getPatientById = async (id) => {
   try {
-    const res = await fetch(`http://localhost:3000/api/patient/${id}`, {
+    const res = await fetch(`/api/patient/${id}`, {
       cache: "no-store",
     });
     if (!res.ok) {
       throw new Error("Failed to fetch topic");
     }
-    console.log(res);
     return res.json();
   } catch (error) {
     console.log(error);

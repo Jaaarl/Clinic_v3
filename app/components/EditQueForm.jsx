@@ -159,12 +159,10 @@ export default function EditQueForm({
       soap: newVisit.soap,
       vitals: newVisit.vitals,
       form: {
-        reseta: resetInput, // Assuming it's a string
-        labReq: newVisit.form.labReq, // Assuming it's a boolean
+        reseta: resetInput,
+        labReq: newVisit.form.labReq,
       },
     };
-
-    console.log("Updated Visit Data:", updatedVisit);
 
     const updatedVisitHistory = [...visit_history];
     if (updatedVisitHistory.length > 0) {
@@ -175,8 +173,6 @@ export default function EditQueForm({
     } else {
       updatedVisitHistory.push(updatedVisit);
     }
-
-    console.log("Updated Visit History:", updatedVisitHistory);
 
     try {
       const res = await fetch(`/api/patient/${id}`, {
