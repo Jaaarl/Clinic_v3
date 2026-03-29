@@ -9,6 +9,7 @@ export default function AddQueForm({
   medical_history1,
   medication1,
   visit_history1,
+  birthday1,
 }) {
   const [name, setName] = useState(name1);
   const [gender, setGender] = useState(gender1);
@@ -52,7 +53,7 @@ export default function AddQueForm({
         reseta: visit.form.reseta || "",
         labReq: visit.form.labReq || "",
       },
-    }))
+    })),
   );
 
   const handleKeyPress = (e) => {
