@@ -1,8 +1,10 @@
 import Head from "next/head";
 import { FaPrescription } from "react-icons/fa";
-import { useRouter } from "next/navigation";
+
 export default function Reseta({
   reqs,
+  medicines,
+  notes,
   name,
   age,
   gender,
@@ -13,7 +15,9 @@ export default function Reseta({
   ptr,
   s2,
 }) {
-  const router = useRouter();
+  // Determine if using new structured format or legacy reqs string
+  const hasStructuredPrescription = medicines && medicines.length > 0;
+
   return (
     <div className="pt-1 px-4 max-w-md mx-auto font-sans">
       <Head>
@@ -26,7 +30,7 @@ export default function Reseta({
         <span className="text-[9px]">
           <div>
             <h1 className="mt-2 font-bold text-center">
-              GUBAT MOM'S & KIDS CLINIC
+              GUBAT MOM&apos;S &amp; KIDS CLINIC
             </h1>
             <h2 className="text-center">Manook St. Gubat, Sorsogon</h2>
             <h3 className="font-bold text-center underline">CLINIC HOURS:</h3>
@@ -68,9 +72,45 @@ export default function Reseta({
           </section>
           <div className="border-t border-black pt-2 h-0.5"></div>
           <FaPrescription size={27} />
-          <section className="text-[11px]">
-            <p style={{ whiteSpace: "pre-wrap" }}>{reqs}</p>
-          </section>
+          
+          {/* Structured prescription format */}
+          {hasStructuredPrescription ? (
+            <section className="text-[11px]">
+              <table className="w-full">
+                <thead>
+                  <tr className="text-left border-b border-black">
+                    <th className="pb-1">Medicine</th>
+                    <th className="pb-1">Dosage</th>
+                    <th className="pb-1">Frequency</th>
+                    <th className="pb-1">Duration</th>
+                    <th className="pb-1">Instructions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {medicines.map((med, idx) => (
+                    <tr key={idx} className="border-b border-gray-300">
+                      <td className="py-1 pr-2">{med.name}</td>
+                      <td className="py-1 pr-2">{med.dosage}</td>
+                      <td className="py-1 pr-2">{med.frequency}</td>
+                      <td className="py-1 pr-2">{med.duration}</td>
+                      <td className="py-1">{med.instructions || "-"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {notes && (
+                <div className="mt-2 pt-2 border-t border-gray-300">
+                  <p className="text-[10px]"><strong>Notes:</strong> {notes}</p>
+                </div>
+              )}
+            </section>
+          ) : (
+            /* Legacy string format (backward compatibility) */
+            <section className="text-[11px]">
+              <p style={{ whiteSpace: "pre-wrap" }}>{reqs}</p>
+            </section>
+          )}
+
           <div className="flex">
             <div className="mt-auto pt-1 ml-auto font-bold text-[10px]">
               <p className="font-bold"> {docName}</p>
