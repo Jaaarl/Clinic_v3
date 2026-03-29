@@ -22,7 +22,7 @@ export default function EditInventoryForm({
     e.preventDefault();
 
     try {
-      const res = await fetch(`http://localhost:3000/api/inventory/${id}`, {
+      const res = await fetch(`/api/inventory/${id}`, {
         method: "PUT",
         headers: {
           "Content-type": "application/json",

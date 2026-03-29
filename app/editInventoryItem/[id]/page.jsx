@@ -3,13 +3,12 @@ import EditInventoryForm from "@/app/components/EditInventoryForm";
 
 const getInventoryItems = async (id) => {
   try {
-    const res = await fetch(`http://localhost:3000/api/inventory/${id}`, {
+    const res = await fetch(`/api/inventory/${id}`, {
       cache: "no-store",
     });
     if (!res.ok) {
       throw new Error("Failed to fetch inventory");
     }
-    console.log(res.json);
     return res.json();
   } catch (error) {
     console.error(error);

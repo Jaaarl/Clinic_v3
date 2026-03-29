@@ -109,7 +109,7 @@ export default function AddQueForm({
     const updatedVisitHistory = [...visit_history, newVisit];
 
     try {
-      const res = await fetch(`http://localhost:3000/api/patient/${id}`, {
+      const res = await fetch(`/api/patient/${id}`, {
         method: "PUT",
         headers: {
           "Content-type": "application/json",
@@ -128,7 +128,7 @@ export default function AddQueForm({
         throw new Error("Failed to update patient");
       }
 
-      const response = await fetch("http://localhost:3000/api/queue", {
+      const response = await fetch("/api/queue", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

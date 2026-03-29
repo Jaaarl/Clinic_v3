@@ -122,8 +122,6 @@ export default function EditPatientForm({
 
   return (
     <div className="flex justify-center items-center min-h-screen">
-      {console.log(birthday)}
-
       <div className="bg-white shadow-lg rounded-lg p-6 max-w-md w-full">
         <form onSubmit={handleSubmit}>
           <label htmlFor="name" className="block text-gray-700 font-bold mb-2">
