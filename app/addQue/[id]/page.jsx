@@ -18,7 +18,7 @@ const getPatientById = async (id) => {
 export default async function AddQue({ params }) {
   const { id } = params;
   const { patient } = await getPatientById(id);
-  const { name, gender, contact, medical_history, medications, visit_history } =
+  const { name, gender, contact, medical_history, medications, visit_history, birthday } =
     patient;
 
   const today = new Date();
@@ -48,6 +48,7 @@ export default async function AddQue({ params }) {
               id={id}
               name1={name}
               gender1={gender}
+              birthday1={birthday}
               contact1={contact}
               medical_history1={medical_history}
               medication1={medications}
