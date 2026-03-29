@@ -1,6 +1,5 @@
 import { inventoryService } from "@/lib/services/inventoryService";
 import { corsResponse, handleOptions } from "@/lib/utils/cors";
-import { validateRequired } from "@/lib/utils/validation";
 
 export async function OPTIONS() { return handleOptions(); }
 
@@ -17,13 +16,11 @@ export async function GET() {
 export async function POST(request) {
   try {
     const data = await request.json();
-    const { valid, missing } = validateRequired(data, ["name", "quantityInStock"]);
-    if (!valid) return corsResponse({ error: `Missing required fields: ${missing.join(", ")}` }, 400);
     const newItem = await inventoryService.addInventoryItem(data, request);
     return corsResponse({ message: "Item added successfully", newItem }, 201);
   } catch (error) {
     console.error("Error adding inventory item:", error);
-    return corsResponse({ error: error.message || "Failed to add item" }, 500);
+    return corsResponse({ error: error.message || "Failed to add item" }, 400);
   }
 }
 
@@ -37,7 +34,8 @@ export async function PUT(request) {
     return corsResponse({ message: "Inventory updated", item: updatedItem });
   } catch (error) {
     console.error("Error updating inventory:", error);
-    return corsResponse({ error: error.message || "Failed to update item" }, 500);
+    return corsResponse({ error: error.message || "Failed to update item" },
+      error.message === "Inventory not found" ? 404 : 400);
   }
 }
 
@@ -51,7 +49,7 @@ export async function DELETE(request) {
   } catch (error) {
     console.error("Error deleting inventory:", error);
     return corsResponse({ error: error.message || "Failed to delete item" },
-      error.message === "Item not found" ? 404 : 500);
+      error.message === "Item not found" ? 404 : 400);
   }
 }
 
@@ -66,6 +64,6 @@ export async function PATCH(request) {
   } catch (error) {
     console.error("Error deducting stock:", error);
     return corsResponse({ error: error.message || "Failed to deduct stock" },
-      error.message === "Item not found" ? 404 : 500);
+      error.message === "Item not found" ? 404 : 400);
   }
 }
