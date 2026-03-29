@@ -5,11 +5,11 @@ export default function AddQueForm({
   id,
   name1,
   gender1,
+  birthday1,
   contact1,
   medical_history1,
   medication1,
   visit_history1,
-  birthday1,
 }) {
   const [name, setName] = useState(name1);
   const [gender, setGender] = useState(gender1);
