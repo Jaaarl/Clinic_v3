@@ -10,11 +10,15 @@ export default function AddInventoryForm() {
   const [price, setPrice] = useState("");
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    setError("");
+    setSuccessMessage("");
 
     const data = { name, quantityInStock, expirationDate, price };
 
@@ -43,6 +47,8 @@ export default function AddInventoryForm() {
       }
     } catch (err) {
       setError("An error occurred while adding the inventory item.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -131,9 +137,10 @@ export default function AddInventoryForm() {
 
           <button
             type="submit"
-            className="w-full py-3 mt-4 bg-blue-600 text-white rounded-lg shadow-lg hover:bg-blue-700 transition duration-300"
+            disabled={isSubmitting}
+            className="w-full py-3 mt-4 bg-blue-600 text-white rounded-lg shadow-lg hover:bg-blue-700 transition duration-300 disabled:bg-blue-300"
           >
-            Add Item
+            {isSubmitting ? "Adding..." : "Add Item"}
           </button>
         </form>
       </div>
