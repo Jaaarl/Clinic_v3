@@ -23,7 +23,7 @@ export default function InventoryPage() {
     try {
       setLoading(true);
       const response = await fetch("/api/inventory", {
-        cache: "no-cache",
+        cache: "no-store",
       });
       const result = await response.json();
 
