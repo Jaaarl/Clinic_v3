@@ -18,7 +18,9 @@ export default function EditDoctorPage({ params }) {
   useEffect(() => {
     const fetchDoctor = async () => {
       try {
-        const response = await fetch(`/api/doctor/${id}`);
+        const response = await fetch(`/api/doctor/${id}`, {
+          cache: "no-store",
+        });
         if (!response.ok) {
           throw new Error("Failed to fetch doctor data");
         }
