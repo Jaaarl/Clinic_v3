@@ -7,48 +7,13 @@ import { FaFemale } from "react-icons/fa";
 import { IoIosAddCircle } from "react-icons/io";
 import { FaEdit } from "react-icons/fa";
 import Navbar from "./components/Navbar";
+import { calculateAge } from "@/lib/utils/dateUtils";
 
 export default function Home() {
   const [query, setQuery] = useState("");
   const [patients, setPatients] = useState([]);
   const [isSearched, setIsSearched] = useState(false);
   const [hoveredPatient, setHoveredPatient] = useState(null);
-  function calculateAge(birthday) {
-    const birthDate = new Date(birthday);
-    const today = new Date();
-
-    let ageYears = today.getFullYear() - birthDate.getFullYear();
-    let ageMonths = today.getMonth() - birthDate.getMonth();
-    let ageDays = Math.floor((today - birthDate) / (1000 * 60 * 60 * 24));
-
-    if (ageMonths < 0) {
-      ageYears--;
-      ageMonths += 12;
-    }
-
-    const birthDateThisYear = new Date(
-      today.getFullYear(),
-      birthDate.getMonth(),
-      birthDate.getDate()
-    );
-    if (today < birthDateThisYear) {
-      ageMonths--;
-      if (ageMonths < 0) {
-        ageYears--;
-        ageMonths += 12;
-      }
-    }
-
-    if (ageYears === 0) {
-      if (ageMonths === 0) {
-        return `${ageDays} days old`;
-      } else {
-        return `${ageMonths} months old`;
-      }
-    } else {
-      return `${ageYears} years old`;
-    }
-  }
 
   const handleChange = (e) => {
     setQuery(e.target.value);
