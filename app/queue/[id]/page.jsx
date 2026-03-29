@@ -4,17 +4,13 @@ import React from "react";
 import connectDB from "@/libs/mongodb";
 import Doctor from "@/models/doctor";
 const getPatientById = async (id) => {
-  try {
-    const res = await fetch(`/api/patient/${id}`, {
-      cache: "no-store",
-    });
-    if (!res.ok) {
-      throw new Error("Failed to fetch topic");
-    }
-    return res.json();
-  } catch (error) {
-    console.log(error);
+  const res = await fetch(`/api/patient/${id}`, {
+    cache: "no-store",
+  });
+  if (!res.ok) {
+    throw new Error("Failed to fetch patient");
   }
+  return res.json();
 };
 
 const getDoctor = async () => {
