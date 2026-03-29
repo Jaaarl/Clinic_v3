@@ -13,6 +13,7 @@ export default function AddQueForm({
   const [name, setName] = useState(name1);
   const [gender, setGender] = useState(gender1);
   const [birthday, setBirthday] = useState();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [contact, setContact] = useState({
     phone: contact1.phone,
@@ -105,6 +106,7 @@ export default function AddQueForm({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
     const updatedVisitHistory = [...visit_history, newVisit];
 
@@ -142,7 +144,10 @@ export default function AddQueForm({
       router.push("/");
       router.refresh();
     } catch (error) {
-      console.log(error);
+      console.error(error);
+      alert("Failed to add visit. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -287,9 +292,10 @@ export default function AddQueForm({
           </div>
           <button
             type="submit"
-            className="bg-green-500 hover:bg-green-700 text-white font-bold mt-2 py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            disabled={isSubmitting}
+            className="bg-green-500 hover:bg-green-700 text-white font-bold mt-2 py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:bg-green-300"
           >
-            Add New Visit
+            {isSubmitting ? "Adding..." : "Add New Visit"}
           </button>
         </form>
       </div>

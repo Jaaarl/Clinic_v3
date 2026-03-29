@@ -8,6 +8,7 @@ export default function NewPatient() {
   const [name, setName] = useState("");
   const [gender, setGender] = useState("");
   const [birthday, setBirthday] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [contact, setContact] = useState({
     phone: "",
@@ -88,6 +89,7 @@ export default function NewPatient() {
       alert("Fill Out all input");
       return;
     }
+    setIsSubmitting(true);
     try {
       const res = await fetch("/api/patient", {
         method: "POST",
@@ -111,7 +113,10 @@ export default function NewPatient() {
         new Error("Failed to create a Patient");
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
+      alert("Failed to create patient. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -352,9 +357,10 @@ export default function NewPatient() {
               </div>
               <button
                 type="submit"
-                className="button bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-full"
+                disabled={isSubmitting}
+                className="button bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-full disabled:bg-green-300"
               >
-                Add Patient
+                {isSubmitting ? "Adding..." : "Add Patient"}
               </button>
             </form>
           </div>
