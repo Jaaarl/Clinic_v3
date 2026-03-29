@@ -33,7 +33,6 @@ export default function Home() {
       const data = await response.json();
       setPatients(data.patients);
       setIsSearched(true);
-      console.log("Search query:", query);
     } catch (error) {
       console.error("Error fetching patients:", error);
     }

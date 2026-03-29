@@ -9,7 +9,7 @@ import Link from "next/link";
 
 const getPatient = async () => {
   try {
-    const res = await fetch("http://localhost:3000/api/patient", {
+    const res = await fetch("/api/patient", {
       cache: "no-store",
     });
     if (!res.ok) {

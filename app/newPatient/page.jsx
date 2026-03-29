@@ -89,7 +89,7 @@ export default function NewPatient() {
       return;
     }
     try {
-      const res = await fetch("http://localhost:3000/api/patient", {
+      const res = await fetch("/api/patient", {
         method: "POST",
         headers: {
           "content-type": "application/json",
