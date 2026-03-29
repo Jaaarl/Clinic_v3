@@ -15,11 +15,13 @@ export default function EditInventoryForm({
     expirationDate1 ? new Date(expirationDate1).toISOString().split("T")[0] : ""
   );
   const [price, setPrice] = useState(price1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
     try {
       const res = await fetch(`/api/inventory/${id}`, {
@@ -37,6 +39,9 @@ export default function EditInventoryForm({
       router.refresh();
     } catch (error) {
       console.error(error);
+      alert("Failed to update inventory. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
   return (
@@ -117,9 +122,10 @@ export default function EditInventoryForm({
 
             <button
               type="submit"
-              className="w-full py-3 mt-4 bg-blue-600 text-white rounded-lg shadow-lg hover:bg-blue-700 transition duration-300"
+              disabled={isSubmitting}
+              className="w-full py-3 mt-4 bg-blue-600 text-white rounded-lg shadow-lg hover:bg-blue-700 transition duration-300 disabled:bg-blue-300"
             >
-              Add Item
+              {isSubmitting ? "Updating..." : "Update Item"}
             </button>
           </form>
         </div>
