@@ -1,26 +1,37 @@
-import connectDB from "@/libs/mongodb";
-import Doctor from "@/models/doctor";
-import { NextResponse } from "next/server";
+import { doctorService } from "@/lib/services/doctorService";
+import { corsResponse, handleOptions } from "@/lib/utils/cors";
+import { validateRequired } from "@/lib/utils/validation";
 
-export async function POST(request) {
-    try {
-        const { name , lic , ptr, s2 } = await request.json();
-        await connectDB();
-        await Doctor.create({ name , lic , ptr, s2 });
-        return NextResponse.json({ message: "Doctor Created" }, { status: 201 });
-    } catch (error) {
-        console.error("Error creating doctor:", error);
-        return NextResponse.json({ error: "Failed to create doctor" }, { status: 500 });
-    }
+export async function OPTIONS() {
+  return handleOptions();
 }
 
 export async function GET() {
-    try {
-        await connectDB();
-        const doctors = await Doctor.find(); 
-        return NextResponse.json({ doctors }, { status: 200 });
-    } catch (error) {
-        console.error('Error fetching doctors:', error); 
-        return NextResponse.json({ error: 'Failed to fetch doctors' }, { status: 500 });
+  try {
+    const doctors = await doctorService.getDoctors();
+    return corsResponse({ doctors });
+  } catch (error) {
+    console.error("Error fetching doctors:", error);
+    return corsResponse({ error: "Failed to fetch doctors" }, 500);
+  }
+}
+
+export async function POST(request) {
+  try {
+    const data = await request.json();
+    const { valid, missing } = validateRequired(data, ["name", "lic"]);
+
+    if (!valid) {
+      return corsResponse(
+        { error: `Missing required fields: ${missing.join(", ")}` },
+        400
+      );
     }
+
+    const doctor = await doctorService.createDoctor(data);
+    return corsResponse({ message: "Doctor Created", doctor }, 201);
+  } catch (error) {
+    console.error("Error creating doctor:", error);
+    return corsResponse({ error: "Failed to create doctor" }, 500);
+  }
 }

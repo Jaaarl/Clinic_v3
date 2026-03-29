@@ -1,19 +1,17 @@
-import connectDB from "@/libs/mongodb";
-import Prescription from "@/models/prescription";
-import { NextResponse } from "next/server";
+import { prescriptionService } from "@/lib/services/prescriptionService";
+import { corsResponse, handleOptions } from "@/lib/utils/cors";
+
+export async function OPTIONS() {
+  return handleOptions();
+}
 
 export async function GET(request, { params }) {
   try {
     const { patientId } = params;
-    await connectDB();
-
-    const prescriptions = await Prescription.find({ patientId })
-      .sort({ date: -1 })
-      .limit(10);
-
-    return NextResponse.json({ prescriptions }, { status: 200 });
+    const prescriptions = await prescriptionService.getPrescriptionsByPatientId(patientId);
+    return corsResponse({ prescriptions });
   } catch (error) {
     console.error("Error fetching prescriptions:", error);
-    return NextResponse.json({ error: "Failed to fetch prescriptions" }, { status: 500 });
+    return corsResponse({ error: "Failed to fetch prescriptions" }, 500);
   }
 }

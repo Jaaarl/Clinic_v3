@@ -1,39 +1,40 @@
-import connectDB from "@/libs/mongodb";
-import Patient from "@/models/patient";
-import { NextResponse } from "next/server";
+import { patientService } from "@/lib/services/patientService";
+import { corsResponse, handleOptions } from "@/lib/utils/cors";
 
-// Handle OPTIONS requests for CORS preflight
 export async function OPTIONS() {
-    const response = NextResponse.json({});
-
-    // Set CORS headers for preflight requests
-    response.headers.set('Access-Control-Allow-Origin', '*');
-    response.headers.set('Access-Control-Allow-Methods', 'PUT, OPTIONS');
-    response.headers.set('Access-Control-Allow-Headers', 'Content-Type');
-
-    return response;
+  return handleOptions();
 }
+
 export async function GET(request, { params }) {
+  try {
     const { id } = params;
-    await connectDB();
-    const patient = await Patient.findOne({ _id: id });
-    return NextResponse.json({ patient }, { status: 200 });
+    const patient = await patientService.getPatientById(id);
+
+    if (!patient) {
+      return corsResponse({ error: "Patient not found" }, 404);
+    }
+
+    return corsResponse({ patient });
+  } catch (error) {
+    console.error("Error fetching patient:", error);
+    return corsResponse({ error: "Failed to fetch patient" }, 500);
+  }
 }
 
 export async function PUT(request, { params }) {
+  try {
     const { id } = params;
-    const { name, age, gender, contact, medical_history, medications, visit_history, birthday } = await request.json();
+    const data = await request.json();
 
-    await connectDB();
-    await Patient.findByIdAndUpdate(id, { name, age, gender, contact, medical_history, medications, visit_history, birthday });
+    const patient = await patientService.updatePatient(id, data);
 
-    const response = NextResponse.json({ message: "Patient updated" }, { status: 200 });
+    if (!patient) {
+      return corsResponse({ error: "Patient not found" }, 404);
+    }
 
-    // Set CORS headers for PUT requests
-    response.headers.set('Access-Control-Allow-Origin', '*');
-    response.headers.set('Access-Control-Allow-Methods', 'PUT');
-    response.headers.set('Access-Control-Allow-Headers', 'Content-Type');
-
-    return response;
+    return corsResponse({ message: "Patient updated", patient });
+  } catch (error) {
+    console.error("Error updating patient:", error);
+    return corsResponse({ error: "Failed to update patient" }, 500);
+  }
 }
-

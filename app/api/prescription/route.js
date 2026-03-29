@@ -1,59 +1,58 @@
-import connectDB from "@/libs/mongodb";
-import Prescription from "@/models/prescription";
-import { NextResponse } from "next/server";
+import { prescriptionService } from "@/lib/services/prescriptionService";
+import { corsResponse, handleOptions } from "@/lib/utils/cors";
+import { validateRequired } from "@/lib/utils/validation";
 
-export async function POST(request) {
-  try {
-    const { patientId, visitId, doctorName, doctorLicense, doctorPtr, doctorS2, medicines, notes } = await request.json();
-
-    if (!patientId || !doctorName || !doctorLicense || !medicines?.length) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
-    }
-
-    await connectDB();
-
-    const prescription = await Prescription.create({
-      patientId,
-      visitId,
-      doctorName,
-      doctorLicense,
-      doctorPtr,
-      doctorS2,
-      medicines,
-      notes
-    });
-
-    return NextResponse.json({ message: "Prescription created", prescription }, { status: 201 });
-  } catch (error) {
-    console.error("Error creating prescription:", error);
-    return NextResponse.json({ error: "Failed to create prescription" }, { status: 500 });
-  }
+export async function OPTIONS() {
+  return handleOptions();
 }
 
 export async function GET(request) {
   try {
-    await connectDB();
-
-    const searchParams = request.nextUrl.searchParams;
-    const patientId = searchParams.get("patientId");
+    const { searchParams } = request.nextUrl;
     const prescriptionId = searchParams.get("id");
+    const patientId = searchParams.get("patientId");
 
     if (prescriptionId) {
-      const prescription = await Prescription.findById(prescriptionId);
+      const prescription = await prescriptionService.getPrescriptionById(prescriptionId);
       if (!prescription) {
-        return NextResponse.json({ error: "Prescription not found" }, { status: 404 });
+        return corsResponse({ error: "Prescription not found" }, 404);
       }
-      return NextResponse.json({ prescription }, { status: 200 });
+      return corsResponse({ prescription });
     }
 
     if (patientId) {
-      const prescriptions = await Prescription.find({ patientId }).sort({ date: -1 });
-      return NextResponse.json({ prescriptions }, { status: 200 });
+      const prescriptions = await prescriptionService.getPrescriptionsByPatientId(patientId);
+      return corsResponse({ prescriptions });
     }
 
-    return NextResponse.json({ error: "patientId or id required" }, { status: 400 });
+    return corsResponse({ error: "patientId or id required" }, 400);
   } catch (error) {
     console.error("Error fetching prescription:", error);
-    return NextResponse.json({ error: "Failed to fetch prescription" }, { status: 500 });
+    return corsResponse({ error: "Failed to fetch prescription" }, 500);
+  }
+}
+
+export async function POST(request) {
+  try {
+    const data = await request.json();
+    const { valid, missing } = validateRequired(data, [
+      "patientId",
+      "doctorName",
+      "doctorLicense",
+      "medicines",
+    ]);
+
+    if (!valid) {
+      return corsResponse(
+        { error: `Missing required fields: ${missing.join(", ")}` },
+        400
+      );
+    }
+
+    const prescription = await prescriptionService.createPrescription(data);
+    return corsResponse({ message: "Prescription created", prescription }, 201);
+  } catch (error) {
+    console.error("Error creating prescription:", error);
+    return corsResponse({ error: "Failed to create prescription" }, 500);
   }
 }
