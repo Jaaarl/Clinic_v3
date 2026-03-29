@@ -1,37 +1,29 @@
-import connectDB from "@/libs/mongodb";
-import Doctor from "@/models/doctor";
-import { NextResponse } from "next/server";
+import { doctorService } from "@/lib/services/doctorService";
+import { corsResponse, handleOptions } from "@/lib/utils/cors";
 
-export async function OPTIONS() {
+export async function OPTIONS() { return handleOptions(); }
 
-    const response = NextResponse.json({});
-
-    response.headers.set('Access-Control-Allow-Origin', '*');
-    response.headers.set('Access-Control-Allow-Methods', 'PUT, OPTIONS');
-    response.headers.set('Access-Control-Allow-Headers', 'Content-Type');
-
-    return response;
-}
 export async function GET(request, { params }) {
+  try {
     const { id } = params;
-    await connectDB();
-    const doctor = await Doctor.findOne({ _id: id });
-    return NextResponse.json({ doctor }, { status: 200 });
+    const doctor = await doctorService.getDoctorById(id);
+    if (!doctor) return corsResponse({ error: "Doctor not found" }, 404);
+    return corsResponse({ doctor });
+  } catch (error) {
+    console.error("Error fetching doctor:", error);
+    return corsResponse({ error: "Failed to fetch doctor" }, 500);
+  }
 }
 
 export async function PUT(request, { params }) {
+  try {
     const { id } = params;
-    const { name , lic , ptr, s2 } = await request.json();
-
-    await connectDB();
-    await Doctor.findByIdAndUpdate(id, { name , lic , ptr, s2 });
-
-    const response = NextResponse.json({ message: "Doctor updated" }, { status: 200 });
-
-    // Set CORS headers for PUT requests
-    response.headers.set('Access-Control-Allow-Origin', '*');
-    response.headers.set('Access-Control-Allow-Methods', 'PUT');
-    response.headers.set('Access-Control-Allow-Headers', 'Content-Type');
-
-    return response;
+    const data = await request.json();
+    const doctor = await doctorService.updateDoctor(id, data);
+    if (!doctor) return corsResponse({ error: "Doctor not found" }, 404);
+    return corsResponse({ message: "Doctor updated", doctor });
+  } catch (error) {
+    console.error("Error updating doctor:", error);
+    return corsResponse({ error: "Failed to update doctor" }, 500);
+  }
 }

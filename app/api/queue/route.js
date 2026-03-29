@@ -1,33 +1,41 @@
-import { NextResponse } from 'next/server';
-import connectDB from "@/libs/mongodb";
-import Queue from '@/models/queue';
-import QueueNum from '@/models/queueNum';
+import { queueService } from "@/lib/services/queueService";
+import { corsResponse, handleOptions } from "@/lib/utils/cors";
+import { validateRequired } from "@/lib/utils/validation";
+
+export async function OPTIONS() { return handleOptions(); }
 
 export async function GET() {
-    await connectDB();
-    const queueEntries = await Queue.find();
-    return NextResponse.json({ queueEntries });
+  try {
+    const queueEntries = await queueService.getQueueEntries();
+    return corsResponse({ queueEntries });
+  } catch (error) {
+    console.error("Error fetching queue:", error);
+    return corsResponse({ error: "Failed to fetch queue" }, 500);
+  }
+}
+
+export async function POST(request) {
+  try {
+    const data = await request.json();
+    const { valid, missing } = validateRequired(data, ["referenceId"]);
+    if (!valid) return corsResponse({ error: `Missing required fields: ${missing.join(", ")}` }, 400);
+    const result = await queueService.addToQueue(data);
+    return corsResponse({ queueEntry: result.queueEntry, queueNumber: result.queueNum }, 201);
+  } catch (error) {
+    console.error("Error creating queue entry:", error);
+    return corsResponse({ error: "Failed to create queue entry" }, 500);
+  }
 }
 
 export async function DELETE(request) {
-    const id = request.nextUrl.searchParams.get("id");
-    await connectDB();
-
-    const queueEntry = await Queue.findOneAndDelete({ _id: id });
-
-    return NextResponse.json({ message: queueEntry ? "Queue entry deleted" : "Queue entry not found" }, { status: 200 });
-}
-export async function POST(request) {
-    await connectDB();
-    const { referenceId, status } = await request.json();
-    const newQueueEntry = new Queue({ referenceId, status });
-    const newQueueNum = new QueueNum();
-    await newQueueNum.save();
-
-    try {
-        const savedEntry = await newQueueEntry.save();
-        return NextResponse.json(savedEntry, { status: 201 });
-    } catch (error) {
-        return NextResponse.json({ message: 'Failed to create queue entry' }, { status: 500 });
-    }
+  try {
+    const { searchParams } = request.nextUrl;
+    const id = searchParams.get("id");
+    if (!id) return corsResponse({ error: "ID is required" }, 400);
+    const deleted = await queueService.removeFromQueue(id);
+    return corsResponse({ message: deleted ? "Queue entry deleted" : "Queue entry not found" });
+  } catch (error) {
+    console.error("Error deleting queue entry:", error);
+    return corsResponse({ error: "Failed to delete queue entry" }, 500);
+  }
 }

@@ -2,6 +2,15 @@
 import React from "react";
 import LabReqForm from "../components/LabReqForm";
 import { useSearchParams } from "next/navigation";
+import { calculateAge } from "@/lib/utils/dateUtils";
+
+function decodeTwice(encodedStr) {
+  if (!encodedStr) return "";
+  const firstDecode = decodeURIComponent(encodedStr);
+  const finalDecode = decodeURIComponent(firstDecode);
+  return finalDecode;
+}
+
 export default function Page() {
   const searchParams = useSearchParams();
   const name = searchParams.get("name");
@@ -14,43 +23,7 @@ export default function Page() {
   const lic = searchParams.get("lic");
   const ptr = searchParams.get("ptr");
   const s2 = searchParams.get("s2");
-  function decodeTwice(encodedStr) {
-    // First decode
-    const firstDecode = decodeURIComponent(encodedStr);
-    // Second decode
-    const finalDecode = decodeURIComponent(firstDecode);
-    return finalDecode;
-  }
-  function calculateAge(birthday) {
-    const birthDate = new Date(birthday);
-    const today = new Date();
-    let ageYears = today.getFullYear() - birthDate.getFullYear();
-    let ageMonths = today.getMonth() - birthDate.getMonth();
 
-    if (
-      ageMonths < 0 ||
-      (ageMonths === 0 && today.getDate() < birthDate.getDate())
-    ) {
-      ageYears--;
-      ageMonths += 12;
-    }
-
-    if (ageYears === 0) {
-      ageMonths = today.getMonth() - birthDate.getMonth();
-      if (today.getDate() < birthDate.getDate()) {
-        ageMonths--;
-      }
-
-      if (ageMonths === 0) {
-        const ageDays = Math.floor((today - birthDate) / (1000 * 60 * 60 * 24));
-        return `${ageDays} days old`;
-      }
-
-      return `${ageMonths} months old`;
-    }
-
-    return `${ageYears} years old`;
-  }
   const realAge = calculateAge(decodeTwice(age));
   return (
     <>

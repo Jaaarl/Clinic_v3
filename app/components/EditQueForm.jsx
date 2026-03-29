@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import AutoCompleteResta from "@/app/components/AutoCompleteResta";
+import { calculateAge } from "@/lib/utils/dateUtils";
 
 export default function EditQueForm({
   id,
@@ -229,30 +230,6 @@ export default function EditQueForm({
     ", " +
     contact.address.province;
 
-  function calculateAge(birthday) {
-    const birthDate = new Date(birthday);
-    const today = new Date();
-
-    let ageYears = today.getFullYear() - birthDate.getFullYear();
-    let ageMonths = today.getMonth() - birthDate.getMonth();
-    let ageDays = today.getDate() - birthDate.getDate();
-
-    // Adjust for negative months
-    if (ageMonths < 0) {
-      ageYears--;
-      ageMonths += 12;
-    }
-
-    // Adjust for negative days in current month
-    if (ageDays < 0) {
-      ageMonths--;
-      const lastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
-      ageDays += lastMonth.getDate(); // Get the number of days in the previous month
-    }
-
-    return `${ageYears} years, ${ageMonths} months, ${ageDays} days old`;
-  }
-
   const [expandedVisitIndex, setExpandedVisitIndex] = useState(null);
 
   function decodeTwice(encodedStr) {
@@ -292,7 +269,7 @@ export default function EditQueForm({
             : "N/A"}
         </p>
         <p className="text-sm font-medium">
-          Age: {birthday ? `${calculateAge(birthday)}` : "N/A"}
+          Age: {birthday ? `${calculateAge(birthday, true)}` : "N/A"}
         </p>
         <p className="text-sm font-medium">Phone: {contact.phone}</p>
         <p className="text-sm font-medium">Email: {contact.email}</p>
