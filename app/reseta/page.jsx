@@ -2,44 +2,13 @@
 import { React, useState, useEffect } from "react";
 import Reseta from "../components/Reseta";
 import { useSearchParams } from "next/navigation";
+import { calculateAge } from "@/lib/utils/dateUtils";
 
 function decodeTwice(encodedStr) {
   if (!encodedStr) return "";
   const firstDecode = decodeURIComponent(encodedStr);
   const finalDecode = decodeURIComponent(firstDecode);
   return finalDecode;
-}
-
-function calculateAge(birthday) {
-  if (!birthday) return "N/A";
-  const birthDate = new Date(birthday);
-  const today = new Date();
-  let ageYears = today.getFullYear() - birthDate.getFullYear();
-  let ageMonths = today.getMonth() - birthDate.getMonth();
-
-  if (
-    ageMonths < 0 ||
-    (ageMonths === 0 && today.getDate() < birthDate.getDate())
-  ) {
-    ageYears--;
-    ageMonths += 12;
-  }
-
-  if (ageYears === 0) {
-    ageMonths = today.getMonth() - birthDate.getMonth();
-    if (today.getDate() < birthDate.getDate()) {
-      ageMonths--;
-    }
-
-    if (ageMonths === 0) {
-      const ageDays = Math.floor((today - birthDate) / (1000 * 60 * 60 * 24));
-      return `${ageDays} days old`;
-    }
-
-    return `${ageMonths} months old`;
-  }
-
-  return `${ageYears} years old`;
 }
 
 export default function Page() {

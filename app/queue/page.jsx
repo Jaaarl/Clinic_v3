@@ -8,6 +8,7 @@ import Link from "next/link";
 import DeleteQue from "../components/DeleteQue";
 import Navbar from "@/app/components/Navbar";
 import QueueNum from "@/models/queueNum";
+import { calculateAge } from "@/lib/utils/dateUtils";
 
 const getQueueEntries = async () => {
   try {
@@ -61,29 +62,6 @@ const getQueueNumber = async () => {
 export default async function Page() {
   const queueEntries = await getQueueEntries();
   const queueNumber = await getQueueNumber();
-  function calculateAge(birthday) {
-    const birthDate = new Date(birthday);
-    const today = new Date();
-
-    let ageYears = today.getFullYear() - birthDate.getFullYear();
-    let ageMonths = today.getMonth() - birthDate.getMonth();
-    let ageDays = today.getDate() - birthDate.getDate();
-
-    // Adjust for negative months
-    if (ageMonths < 0) {
-        ageYears--;
-        ageMonths += 12;
-    }
-
-    // Adjust for negative days in current month
-    if (ageDays < 0) {
-        ageMonths--;
-        const lastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
-        ageDays += lastMonth.getDate(); // Get the number of days in the previous month
-    }
-
-    return `${ageYears} years, ${ageMonths} months, ${ageDays} days old`;
-  }
   return (
     <>
       <Navbar />
@@ -134,7 +112,7 @@ export default async function Page() {
                     </div>
                     <p className="text-sm text-gray-600">
                       {entry.birthday
-                        ? `${calculateAge(entry.birthday)}`
+                        ? `${calculateAge(entry.birthday, true)}`
                         : "N/A"}
                     </p>
                     <div className="flex flex-col text-sm text-gray-600">
