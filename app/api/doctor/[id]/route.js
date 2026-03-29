@@ -24,6 +24,6 @@ export async function PUT(request, { params }) {
     return corsResponse({ message: "Doctor updated", doctor });
   } catch (error) {
     console.error("Error updating doctor:", error);
-    return corsResponse({ error: "Failed to update doctor" }, 500);
+    return corsResponse({ error: error.message || "Failed to update doctor" }, 400);
   }
 }

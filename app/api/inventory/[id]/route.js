@@ -25,6 +25,6 @@ export async function PUT(request, { params }) {
   } catch (error) {
     console.error("Error updating inventory:", error);
     return corsResponse({ error: error.message || "Failed to update inventory" },
-      error.message === "Inventory not found" ? 404 : 500);
+      error.message === "Inventory not found" ? 404 : 400);
   }
 }
