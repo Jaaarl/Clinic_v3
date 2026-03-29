@@ -5,6 +5,7 @@ export default function AddQueForm({
   id,
   name1,
   gender1,
+  birthday1,
   contact1,
   medical_history1,
   medication1,
