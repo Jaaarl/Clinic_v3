@@ -1,18 +1,15 @@
 import React from "react";
 import EditInventoryForm from "@/app/components/EditInventoryForm";
+import { getApiUrl } from "@/lib/config/api";
 
 const getInventoryItems = async (id) => {
-  try {
-    const res = await fetch(`/api/inventory/${id}`, {
-      cache: "no-store",
-    });
-    if (!res.ok) {
-      throw new Error("Failed to fetch inventory");
-    }
-    return res.json();
-  } catch (error) {
-    console.error(error);
+  const res = await fetch(getApiUrl(`/api/inventory/${id}`), {
+    cache: "no-store",
+  });
+  if (!res.ok) {
+    throw new Error("Failed to fetch inventory");
   }
+  return res.json();
 };
 
 export default async function editInventory({ params }) {

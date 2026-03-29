@@ -1,18 +1,16 @@
 import EditPatientForm from "@/app/components/EditPatientForm";
 import React from "react";
 import Navbar from "@/app/components/Navbar";
+import { getApiUrl } from "@/lib/config/api";
+
 const getPatientById = async (id) => {
-  try {
-    const res = await fetch(`/api/patient/${id}`, {
-      cache: "no-store",
-    });
-    if (!res.ok) {
-      throw new Error("Failed to fetch topic");
-    }
-    return res.json();
-  } catch (error) {
-    console.log(error);
+  const res = await fetch(getApiUrl(`/api/patient/${id}`), {
+    cache: "no-store",
+  });
+  if (!res.ok) {
+    throw new Error("Failed to fetch patient");
   }
+  return res.json();
 };
 
 export default async function editPatient({ params }) {
