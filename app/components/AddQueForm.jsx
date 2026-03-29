@@ -12,7 +12,7 @@ export default function AddQueForm({
 }) {
   const [name, setName] = useState(name1);
   const [gender, setGender] = useState(gender1);
-  const [birthday, setBirthday] = useState();
+  const [birthday, setBirthday] = useState(birthday1);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [contact, setContact] = useState({
