@@ -5,7 +5,7 @@ export default function RemoveItemButton({ id }) {
   const removeInventoryItem = async () => {
     const confirmed = confirm("Are you sure?");
     if (confirmed) {
-      const res = await fetch(`/api/inventory?id=${id}`, {
+      const res = await fetch(`/api/inventory/${id}`, {
         method: "DELETE",
       });
       if (res.ok) {

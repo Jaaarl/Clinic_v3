@@ -7,7 +7,7 @@ export default function RemoveBtn({ id }) {
   const removeTopic = async () => {
     const confirmed = confirm("Are you sure?");
     if (confirmed) {
-      const res = await fetch(`/api/patient?id=${id}`, {
+      const res = await fetch(`/api/patient/${id}`, {
         method: "DELETE",
       });
       if (res.ok) {
