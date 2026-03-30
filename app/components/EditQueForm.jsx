@@ -553,7 +553,7 @@ export default function EditQueForm({
                 pathname: "/reseta",
                 query: {
                   name: encodeURIComponent(name),
-                  age: encodeURIComponent(birthday),
+                  birthday: encodeURIComponent(birthday),
                   address: encodeURIComponent(fullAddress),
                   sex: encodeURIComponent(gender[0].toUpperCase()),
                   req: encodeURIComponent(resetInput),
@@ -577,7 +577,7 @@ export default function EditQueForm({
                 pathname: "/labReq",
                 query: {
                   name: encodeURIComponent(name),
-                  age: encodeURIComponent(birthday),
+                  birthday: encodeURIComponent(birthday),
                   address: encodeURIComponent(fullAddress),
                   sex: encodeURIComponent(gender[0].toUpperCase()),
                   req: encodeURIComponent(newVisit.form.labReq),
@@ -601,7 +601,7 @@ export default function EditQueForm({
                 pathname: "/certificate",
                 query: {
                   name: encodeURIComponent(name),
-                  age: encodeURIComponent(birthday),
+                  birthday: encodeURIComponent(birthday),
                   address: encodeURIComponent(fullAddress),
                   sex: encodeURIComponent(gender.toUpperCase()),
                   req1: encodeURIComponent(newVisit.soap.assessment),

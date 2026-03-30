@@ -14,7 +14,7 @@ function decodeTwice(encodedStr) {
 export default function Page() {
   const searchParams = useSearchParams();
   const name = searchParams.get("name");
-  const age = searchParams.get("age");
+  const age = searchParams.get("birthday");
   const sex = searchParams.get("sex");
   const date = searchParams.get("date");
   const address = searchParams.get("address");
