@@ -1,8 +1,11 @@
+"use client";
+
 import Head from "next/head";
 import { FaPrescription } from "react-icons/fa";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
-export default function Reseta({
+export default function Certi({
   req1,
   req2,
   name,
@@ -15,13 +18,44 @@ export default function Reseta({
   ptr,
   s2,
 }) {
-  const router = useRouter();
+  const [clinicInfo, setClinicInfo] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchClinicInfo = async () => {
+      try {
+        const res = await fetch("/api/clinic-info");
+        const data = await res.json();
+        setClinicInfo(data.clinicInfo);
+      } catch (error) {
+        console.error("Error fetching clinic info:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchClinicInfo();
+  }, []);
+
+  if (loading) {
+    return <div className="p-4">Loading...</div>;
+  }
+
+  // Get first address
+  const primaryAddress = clinicInfo?.addresses?.[0];
+  const formatAddress = (addr) => {
+    if (!addr) return "CLINIC_ADDRESS";
+    const parts = [addr.street, addr.city, addr.province, addr.zip].filter(
+      (p) => p && p.trim()
+    );
+    return parts.join(", ") || "CLINIC_ADDRESS";
+  };
 
   return (
     <div className="max-w-md mx-auto font-sans">
       <Head>
-        <title>Prescription</title>
-        <meta name="description" content="Prescription page" />
+        <title>Medical Certificate</title>
+        <meta name="description" content="Medical Certificate page" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
@@ -29,8 +63,10 @@ export default function Reseta({
         <div className=" flex items-center justify-center">
           <div className="bg-white rounded-lg">
             <div className="text-center">
-              <h1 className="mt-2 font-bold">CLINIC_NAME</h1>
-              <h2>CLINIC_ADDRESS</h2>
+              <h1 className="mt-2 font-bold">
+                {clinicInfo?.name || "CLINIC_NAME"}
+              </h1>
+              <h2>{formatAddress(primaryAddress)}</h2>
             </div>
             <div className="border-t border-black pt-2 h-0.5"></div>
             <div className="text-center text-[20px] font-bold mb-4 font-roboto">
