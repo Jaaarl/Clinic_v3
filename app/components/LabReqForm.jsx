@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 
 export default function LabReqForm({
   reqs,
@@ -12,13 +14,46 @@ export default function LabReqForm({
   ptr,
   s2,
 }) {
+  const [clinicInfo, setClinicInfo] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchClinicInfo = async () => {
+      try {
+        const res = await fetch("/api/clinic-info");
+        const data = await res.json();
+        setClinicInfo(data.clinicInfo);
+      } catch (error) {
+        console.error("Error fetching clinic info:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchClinicInfo();
+  }, []);
+
+  if (loading) {
+    return <div className="p-4">Loading...</div>;
+  }
+
+  // Get first address
+  const primaryAddress = clinicInfo?.addresses?.[0];
+  const formatAddress = (addr) => {
+    if (!addr) return "CLINIC_ADDRESS";
+    const parts = [addr.street, addr.city, addr.province, addr.zip].filter(
+      (p) => p && p.trim()
+    );
+    return parts.join(", ") || "CLINIC_ADDRESS";
+  };
+
   return (
     <div className="p-4 max-w-md mx-auto font-sans">
       <main>
         <h1 className="text-xs font-bold text-center">
-          CLINIC_NAME
+          {clinicInfo?.name || "CLINIC_NAME"}
         </h1>
-        <h2 className="text-xs text-center">CLINIC_ADDRESS</h2>
+        <h2 className="text-xs text-center">{formatAddress(primaryAddress)}</h2>
 
         <h4 className="text-xs text-center font-bold">
           Laboratory Request Form
