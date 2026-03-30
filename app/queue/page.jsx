@@ -33,7 +33,7 @@ const getQueueEntries = async () => {
           medications: patient ? patient.medications : [],
           visitHistory: patient ? patient.visit_history : [],
         };
-      })
+      }),
     );
 
     return queueWithPatients;
@@ -136,7 +136,7 @@ export default async function Page() {
                   </div>
                 </div>
                 <div className="flex flex-col gap-3 ">
-                  <Link href={`/queue/${entry.patientId}/`}>
+                  <Link href={`/queue/${entry._id}/`}>
                     <button className="bg-blue-500 text-white py-2 px-4 rounded shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300">
                       Admit
                     </button>
