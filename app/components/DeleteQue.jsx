@@ -9,7 +9,7 @@ export default function DeleteQue({ id }) {
     const confirmed = confirm("Are you DONE with the Patient?");
     if (confirmed) {
       try {
-        const res = await fetch(`/api/queue?id=${id}`, {
+        const res = await fetch(`/api/queue/${id}`, {
           method: "DELETE",
         });
 

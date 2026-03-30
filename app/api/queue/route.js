@@ -23,16 +23,3 @@ export async function POST(request) {
     return corsResponse({ error: error.message || "Failed to create queue entry" }, 400);
   }
 }
-
-export async function DELETE(request) {
-  try {
-    const { searchParams } = request.nextUrl;
-    const id = searchParams.get("id");
-    if (!id) return corsResponse({ error: "ID is required" }, 400);
-    const deleted = await queueService.removeFromQueue(id);
-    return corsResponse({ message: deleted ? "Queue entry deleted" : "Queue entry not found" });
-  } catch (error) {
-    console.error("Error deleting queue entry:", error);
-    return corsResponse({ error: "Failed to delete queue entry" }, 500);
-  }
-}
