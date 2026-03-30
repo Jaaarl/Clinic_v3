@@ -10,14 +10,13 @@ export function DeductButton({ id, currentStock, name, exp }) {
   const handleDeduct = async () => {
     try {
       const response = await fetch(
-        `/api/inventory?id=${id}&quantityToDeduct=${quantityToDeduct}`,
+        `/api/inventory/${id}`,
         {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            id,
             quantityToDeduct,
           }),
         }

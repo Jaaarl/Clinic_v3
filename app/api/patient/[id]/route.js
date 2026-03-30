@@ -27,3 +27,15 @@ export async function PUT(request, { params }) {
     return corsResponse({ error: error.message || "Failed to update patient" }, 400);
   }
 }
+
+export async function DELETE(request, { params }) {
+  try {
+    const { id } = params;
+    if (!id) return corsResponse({ error: "ID is required" }, 400);
+    await patientService.deletePatient(id);
+    return corsResponse({ message: "Patient deleted" });
+  } catch (error) {
+    console.error("Error deleting patient:", error);
+    return corsResponse({ error: "Failed to delete patient" }, 500);
+  }
+}
