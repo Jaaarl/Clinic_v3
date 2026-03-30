@@ -15,6 +15,20 @@ export async function GET(request, { params }) {
   }
 }
 
+export async function PUT(request, { params }) {
+  try {
+    const { id } = params;
+    const data = await request.json();
+    const updatedItem = await inventoryService.updateInventoryItem(id, data, data.reason || "Manual update", request);
+    if (!updatedItem) return corsResponse({ error: "Inventory not found" }, 404);
+    return corsResponse({ message: "Inventory updated", item: updatedItem });
+  } catch (error) {
+    console.error("Error updating inventory:", error);
+    return corsResponse({ error: error.message || "Failed to update inventory" },
+      error.message === "Inventory not found" ? 404 : 400);
+  }
+}
+
 export async function DELETE(request, { params }) {
   try {
     const { id } = params;
