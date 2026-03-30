@@ -7,6 +7,7 @@ import { calculateAge } from "@/lib/utils/dateUtils";
 
 export default function EditQueForm({
   id,
+  queueId,
   name1,
   gender1,
   birthday1,

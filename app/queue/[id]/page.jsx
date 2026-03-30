@@ -1,31 +1,23 @@
 import EditQueForm from "@/app/components/EditQueForm";
 import Navbar from "@/app/components/Navbar";
 import React from "react";
-import connectDB from "@/libs/mongodb";
-import Doctor from "@/models/doctor";
 import { getApiUrl } from "@/lib/config/api";
 
-const getPatientById = async (id) => {
-  const res = await fetch(getApiUrl(`/api/patient/${id}`), {
+const getQueueWithPatient = async (id) => {
+  const res = await fetch(getApiUrl(`/api/queue/${id}`), {
     cache: "no-store",
   });
   if (!res.ok) {
-    throw new Error("Failed to fetch patient");
+    throw new Error("Failed to fetch queue entry");
   }
   return res.json();
 };
 
-const getDoctor = async () => {
-  await connectDB();
-  const doctor = await Doctor.findOne();
-  return doctor;
-};
-
 export default async function page({ params }) {
   const { id } = params;
-  const { patient } = await getPatientById(id);
-  const doctor = await getDoctor();
+  const { patient, queueEntry } = await getQueueWithPatient(id);
   const {
+    _id: patientId,
     name,
     gender,
     contact,
@@ -34,13 +26,20 @@ export default async function page({ params }) {
     birthday,
     visit_history,
   } = patient;
+
+  // Get doctor (this could also be moved to an API)
+  const doctorRes = await fetch(getApiUrl("/api/doctor"), { cache: "no-store" });
+  const doctorData = await doctorRes.json();
+  const doctor = doctorData.doctors?.[0] || {};
   const { name: doctorName, lic, ptr, s2 } = doctor;
+
   return (
     <>
       <Navbar />
       <div>
         <EditQueForm
-          id={id}
+          id={patientId}
+          queueId={id}
           name1={name}
           gender1={gender}
           contact1={contact}
