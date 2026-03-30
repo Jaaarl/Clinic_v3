@@ -17,6 +17,7 @@ export default async function page({ params }) {
   const { id } = params;
   const { patient, queueEntry } = await getQueueWithPatient(id);
   const {
+    _id: patientId,
     name,
     gender,
     contact,
@@ -37,7 +38,8 @@ export default async function page({ params }) {
       <Navbar />
       <div>
         <EditQueForm
-          id={id}
+          id={patientId}
+          queueId={id}
           name1={name}
           gender1={gender}
           contact1={contact}
