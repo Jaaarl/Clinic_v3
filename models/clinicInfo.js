@@ -67,6 +67,7 @@ const ClinicInfoSchema = new mongoose.Schema({
   },
 });
 
-const ClinicInfo = mongoose.models.ClinicInfo || mongoose.model("ClinicInfo", ClinicInfoSchema);
+const ClinicInfo =
+  mongoose.models.ClinicInfo || mongoose.model("ClinicInfo", ClinicInfoSchema);
 
 export default ClinicInfo;
