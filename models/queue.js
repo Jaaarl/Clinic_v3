@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const { Schema } = mongoose;
+import mongoose from 'mongoose';
+import { Schema } from mongoose;
 
 const QueueSchema = new Schema({
     referenceId: {
@@ -15,4 +15,4 @@ const QueueSchema = new Schema({
 
 const Queue = mongoose.models.Queue || mongoose.model('Queue', QueueSchema);
 
-module.exports = Queue;
+export default Queue;

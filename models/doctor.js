@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const { Schema } = mongoose;
+import mongoose from 'mongoose';
+import { Schema } from mongoose;
 
 const doctorSchema = new Schema({
     name: String,
@@ -10,4 +10,4 @@ const doctorSchema = new Schema({
 
 const Doctor = mongoose.models.Doctor || mongoose.model('Doctor', doctorSchema);
 
-module.exports = Doctor;
+export default Doctor;
