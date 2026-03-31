@@ -1,5 +1,5 @@
 import InventoryLog from '@/models/inventoryLog';
-import connectDB from '@/libs/mongodb';
+import connectDB from '@/lib/mongodb';
 
 /**
  * Utility class for logging inventory changes

@@ -1,5 +1,5 @@
 import React from "react";
-import connectDB from "@/libs/mongodb";
+import connectDB from "@/lib/mongodb";
 import Queue from "@/models/queue"; // Ensure you have the correct import for your Queue model
 import Patient from "@/models/patient"; // Ensure you have the correct import for your Patient model
 import { FaMale } from "react-icons/fa";
