@@ -4,7 +4,8 @@ const QueueSchema = new Schema({
   referenceId: {
     type: Schema.Types.ObjectId,
     required: true,
-    ref: "ReferencedModel", // Patient
+    ref: "Patient",
+  },
   createdAt: {
     type: Date,
     default: Date.now,
