@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const { Schema } = mongoose;
+import mongoose from "mongoose";
+import { Schema } from mongoose;
 
 const logSchema = new Schema({
   name: {
@@ -20,4 +20,5 @@ const logSchema = new Schema({
 });
 
 const Log = mongoose.models.Log || mongoose.model("Log", logSchema);
+
 export default Log;

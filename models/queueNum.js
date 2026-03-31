@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const { Schema } = mongoose;
+import mongoose from 'mongoose';
+import { Schema } from mongoose;
 
 const QueueNumSchema = new Schema({
     createdAt: {
@@ -10,4 +10,4 @@ const QueueNumSchema = new Schema({
 
 const QueueNum = mongoose.models.QueueNum || mongoose.model('QueueNum', QueueNumSchema);
 
-module.exports = QueueNum;
+export default QueueNum;
