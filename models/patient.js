@@ -53,6 +53,9 @@ const patientSchema = new Schema({
   ],
 });
 
+// Text index for fast name search
+patientSchema.index({ name: 'text' });
+
 const Patient =
   mongoose.models.patient || mongoose.model("patient", patientSchema);
 
