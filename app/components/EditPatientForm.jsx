@@ -113,7 +113,8 @@ export default function EditPatientForm({
         throw new Error("failed to update patient");
       }
       alert("Patient information updated successfully.");
-      router.back();
+      // Navigate to queue page then refresh to show updated data
+      router.push(`/queue`);
       router.refresh();
     } catch (error) {
       console.log(error);
