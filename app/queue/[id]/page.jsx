@@ -3,6 +3,9 @@ import Navbar from "@/app/components/Navbar";
 import React from "react";
 import { getApiUrl } from "@/lib/config/api";
 
+// Force dynamic rendering - no caching
+export const dynamic = "force-dynamic";
+
 const getQueueWithPatient = async (id) => {
   const res = await fetch(getApiUrl(`/api/queue/${id}`), {
     cache: "no-store",

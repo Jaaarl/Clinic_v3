@@ -10,6 +10,9 @@ import Navbar from "@/app/components/Navbar";
 import QueueNum from "@/models/queueNum";
 import { calculateAge } from "@/lib/utils/dateUtils";
 
+// Force dynamic rendering - no caching
+export const dynamic = "force-dynamic";
+
 const getQueueEntries = async () => {
   try {
     await connectDB();
