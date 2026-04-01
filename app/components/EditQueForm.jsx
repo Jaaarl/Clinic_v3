@@ -7,6 +7,7 @@ import LabRequestsSection from "./edit-que-form/LabRequestsSection";
 import CertificatesSection from "./edit-que-form/CertificatesSection";
 import CheckoutSection from "./edit-que-form/CheckoutSection";
 import QueueManagementSection from "./edit-que-form/QueueManagementSection";
+import { useEffect, useState } from "react";
 
 export default function EditQueForm({
   id,
@@ -42,9 +43,7 @@ export default function EditQueForm({
   try {
     if (medication1) {
       parsedMedications =
-        typeof medication1 === "string"
-          ? JSON.parse(medication1)
-          : medication1;
+        typeof medication1 === "string" ? JSON.parse(medication1) : medication1;
     }
   } catch (e) {
     console.error("Error parsing medications:", e);
@@ -67,17 +66,21 @@ export default function EditQueForm({
       .map((v) => ({
         request: v.labRequest.request || "",
         isDone: v.labRequest.isDone || false,
-      }))
+      })),
   );
 
   // Certificates state
   const [certificates, setCertificates] = useState(
     parsedHistory
-      .filter((v) => v.certificate && (v.certificate.diagnosis || v.certificate.recommendation))
+      .filter(
+        (v) =>
+          v.certificate &&
+          (v.certificate.diagnosis || v.certificate.recommendation),
+      )
       .map((v) => ({
         diagnosis: v.certificate.diagnosis || "",
         recommendation: v.certificate.recommendation || "",
-      }))
+      })),
   );
 
   // Checkout state
@@ -94,7 +97,10 @@ export default function EditQueForm({
 
   // Queue data state
   const [queueData, setQueueData] = useState({
-    visit_type: parsedHistory.length > 0 ? parsedHistory[parsedHistory.length - 1].visit_type || "new" : "new",
+    visit_type:
+      parsedHistory.length > 0
+        ? parsedHistory[parsedHistory.length - 1].visit_type || "new"
+        : "new",
     status: "waiting",
   });
 
@@ -191,15 +197,17 @@ export default function EditQueForm({
 
     // Filter out empty requests
     const filteredLabRequests = labRequests.filter(
-      (req) => req.request && req.request.trim() !== ""
+      (req) => req.request && req.request.trim() !== "",
     );
     const filteredCertificates = certificates.filter(
-      (cert) => (cert.diagnosis || "").trim() !== "" || (cert.recommendation || "").trim() !== ""
+      (cert) =>
+        (cert.diagnosis || "").trim() !== "" ||
+        (cert.recommendation || "").trim() !== "",
     );
 
     // Filter out empty medications
     const filteredMedications = formData.medications.filter(
-      (med) => med && med.trim() !== ""
+      (med) => med && med.trim() !== "",
     );
 
     try {
@@ -225,8 +233,10 @@ export default function EditQueForm({
       const newVisit = {
         visit_date: new Date().toISOString().split("T")[0],
         visit_type: queueData.visit_type,
-        labRequest: filteredLabRequests.length > 0 ? filteredLabRequests : undefined,
-        certificate: filteredCertificates.length > 0 ? filteredCertificates[0] : undefined,
+        labRequest:
+          filteredLabRequests.length > 0 ? filteredLabRequests : undefined,
+        certificate:
+          filteredCertificates.length > 0 ? filteredCertificates[0] : undefined,
         checkout:
           checkout.date || checkout.purpose || checkout.notes
             ? {
