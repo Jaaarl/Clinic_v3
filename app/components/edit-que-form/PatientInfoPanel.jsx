@@ -3,6 +3,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import React from "react"; // ADD THIS
 import { calculateAge } from "@/lib/utils/dateUtils";
 
 export default function PatientInfoPanel({
@@ -10,17 +11,15 @@ export default function PatientInfoPanel({
   name,
   gender,
   birthday,
-  contact,
-  medical_history,
-  visit_history,
+  contact = {}, // Add default empty object
+  medical_history = { allergies: [], surgeries: [], conditions: [] }, // Add defaults
+  visit_history = [], // Add default empty array
   onSubmit,
 }) {
-  const fullAddress =
-    contact.address.street +
-    ", " +
-    contact.address.city +
-    ", " +
-    contact.address.province;
+  // Safe access with optional chaining
+  const fullAddress = contact?.address
+    ? `${contact.address.street}, ${contact.address.city}, ${contact.address.province}`
+    : "N/A";
 
   return (
     <div className="w-1/3 p-4 bg-white rounded-lg shadow-md overflow-y-auto">
@@ -28,15 +27,15 @@ export default function PatientInfoPanel({
         <span>Patient Info</span>
         <Link
           href={`/editPatient/${id}`}
-          onClick={onSubmit}
           className="bg-blue-500 p-1 px-2 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-[12px]"
         >
           Edit
         </Link>
       </h2>
-      <p className="text-sm font-medium">Name: {name}</p>
+      <p className="text-sm font-medium">Name: {name || "N/A"}</p>
       <p className="text-sm font-medium">
-        Gender: {gender.charAt(0).toUpperCase() + gender.slice(1)}
+        Gender:{" "}
+        {gender ? gender.charAt(0).toUpperCase() + gender.slice(1) : "N/A"}
       </p>
       <p className="text-sm font-medium">
         Birthday:{" "}
@@ -51,42 +50,36 @@ export default function PatientInfoPanel({
       <p className="text-sm font-medium">
         Age: {birthday ? `${calculateAge(birthday, true)}` : "N/A"}
       </p>
-      <p className="text-sm font-medium">Phone: {contact.phone}</p>
-      <p className="text-sm font-medium">Email: {contact.email}</p>
-      <p className="text-sm font-medium">
-        Address: {contact.address.street}, {contact.address.city},{" "}
-        {contact.address.province} {contact.address.zip}
-      </p>
+      <p className="text-sm font-medium">Phone: {contact?.phone || "N/A"}</p>
+      <p className="text-sm font-medium">Email: {contact?.email || "N/A"}</p>
+      <p className="text-sm font-medium">Address: {fullAddress}</p>
 
       <h3 className="text-md font-semibold mt-4 mb-2">Medical History</h3>
       <p className="text-sm">
         Allergies:{" "}
-        {medical_history.allergies.length > 0
+        {medical_history?.allergies?.length > 0
           ? medical_history.allergies.join(", ")
           : "None"}
       </p>
       <p className="text-sm">
         Surgeries:{" "}
-        {medical_history.surgeries.length > 0
+        {medical_history?.surgeries?.length > 0
           ? medical_history.surgeries.join(", ")
           : "None"}
       </p>
       <p className="text-sm">
         Conditions:{" "}
-        {medical_history.conditions.length > 0
+        {medical_history?.conditions?.length > 0
           ? medical_history.conditions.join(", ")
           : "None"}
       </p>
-      <p></p>
 
       <h3 className="text-md font-semibold mt-4">Visit History</h3>
-      {visit_history.length > 0 ? (
+      {visit_history?.length > 0 ? (
         visit_history
           .slice()
           .reverse()
-          .map((visit, index) => (
-            <VisitHistoryItem key={index} visit={visit} index={index} />
-          ))
+          .map((visit, index) => <VisitHistoryItem key={index} visit={visit} />)
       ) : (
         <p className="text-sm">No previous visits recorded.</p>
       )}
@@ -94,8 +87,7 @@ export default function PatientInfoPanel({
   );
 }
 
-// Separate component for each visit history entry
-function VisitHistoryItem({ visit, index }) {
+function VisitHistoryItem({ visit }) {
   const [expanded, setExpanded] = useState(false);
 
   function decodeTwice(encodedStr) {
@@ -115,40 +107,43 @@ function VisitHistoryItem({ visit, index }) {
         onClick={() => setExpanded(!expanded)}
         className="text-blue-500 hover:underline"
       >
-        {expanded ? "Hide Details" : new Date(visit.visit_date).toLocaleDateString()}
+        {expanded
+          ? "Hide Details"
+          : new Date(visit?.visit_date).toLocaleDateString()}
       </button>
       {expanded && (
         <div className="mt-2">
           <p className="text-sm font-medium">
-            Visit Date: {new Date(visit.visit_date).toLocaleDateString()}
+            Visit Date: {new Date(visit?.visit_date).toLocaleDateString()}
           </p>
           <p className="text-sm">
-            Subjective: {visit.soap?.subjective || "N/A"}
+            Subjective: {visit?.soap?.subjective || "N/A"}
           </p>
           <p className="text-sm">
-            Objective: {visit.soap?.objective || "N/A"}
+            Objective: {visit?.soap?.objective || "N/A"}
           </p>
           <p className="text-sm">
-            Assessment: {visit.soap?.assessment || "N/A"}
+            Assessment: {visit?.soap?.assessment || "N/A"}
           </p>
-          <p className="text-sm">Plan: {visit.soap?.plan || "N/A"}</p>
-          <br></br>
+          <p className="text-sm">Plan: {visit?.soap?.plan || "N/A"}</p>
+          <br />
           <p className="text-sm">
             Prescription: <br />
-            {visit.form?.reseta ? decodeTwice(visit.form.reseta)
-              .split("\n")
-              .map((line, i) => (
-                <React.Fragment key={i}>
-                  {line}
-                  <br />
-                </React.Fragment>
-              ))
+            {visit?.form?.reseta
+              ? decodeTwice(visit.form.reseta)
+                  .split("\n")
+                  .map((line, i) => (
+                    <React.Fragment key={i}>
+                      {line}
+                      <br />
+                    </React.Fragment>
+                  ))
               : "N/A"}
           </p>
 
           <p className="text-sm">
             Lab Request: <br />
-            {visit.form?.labReq
+            {visit?.form?.labReq
               ? visit.form.labReq.split("\n").map((line, i) => (
                   <React.Fragment key={i}>
                     {line}
@@ -158,19 +153,19 @@ function VisitHistoryItem({ visit, index }) {
               : "N/A"}
           </p>
           <br />
-          <p className="text-sm">Height: {visit.vitals?.height || "N/A"}</p>
-          <p className="text-sm">Weight: {visit.vitals?.weight || "N/A"}</p>
+          <p className="text-sm">Height: {visit?.vitals?.height || "N/A"}</p>
+          <p className="text-sm">Weight: {visit?.vitals?.weight || "N/A"}</p>
           <p className="text-sm">
-            Respiratory Rate: {visit.vitals?.respiratory_rate || "N/A"}
+            Respiratory Rate: {visit?.vitals?.respiratory_rate || "N/A"}
           </p>
           <p className="text-sm">
-            Blood Pressure: {visit.vitals?.blood_pressure || "N/A"}
+            Blood Pressure: {visit?.vitals?.blood_pressure || "N/A"}
           </p>
           <p className="text-sm">
-            Heart Rate: {visit.vitals?.heart_rate || "N/A"}
+            Heart Rate: {visit?.vitals?.heart_rate || "N/A"}
           </p>
           <p className="text-sm">
-            Temperature: {visit.vitals?.temperature || "N/A"}
+            Temperature: {visit?.vitals?.temperature || "N/A"}
           </p>
         </div>
       )}
