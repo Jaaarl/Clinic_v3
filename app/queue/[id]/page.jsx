@@ -7,7 +7,8 @@ import { getApiUrl } from "@/lib/config/api";
 export const dynamic = "force-dynamic";
 
 const getQueueWithPatient = async (id) => {
-  const res = await fetch(getApiUrl(`/api/queue/${id}`), {
+  // Cache-bust with timestamp to ensure fresh data on every visit
+  const res = await fetch(getApiUrl(`/api/queue/${id}?_=${Date.now()}`), {
     cache: "no-store",
   });
   if (!res.ok) {
