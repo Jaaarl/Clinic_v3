@@ -16,27 +16,33 @@ const getQueueEntries = async () => {
 
     const queueEntries = await Queue.find();
 
-    const queueWithPatients = await Promise.all(
-      queueEntries.map(async (entry) => {
-        const patient = await Patient.findById(entry.referenceId);
+    // Fetch all patients in one query instead of N queries (N+1 fix)
+    const patientIds = queueEntries.map((entry) => entry.referenceId);
+    const patients = await Patient.find({ _id: { $in: patientIds } });
 
-        return {
-          _id: entry._id.toString(),
-          referenceId: entry.referenceId.toString(),
-          status: entry.status,
-          patientName: patient ? patient.name : "Unknown",
-          patientId: patient ? patient._id.toString() : null,
-          gender: patient ? patient.gender : "Unknown",
-          birthday: patient ? patient.birthday : null,
-          contact: patient ? patient.contact : null,
-          medicalHistory: patient ? patient.medical_history : [],
-          medications: patient ? patient.medications : [],
-          visitHistory: patient ? patient.visit_history : [],
-        };
-      }),
-    );
+    // Create a map for quick lookup
+    const patientMap = {};
+    patients.forEach((patient) => {
+      patientMap[patient._id.toString()] = patient;
+    });
 
-    return queueWithPatients;
+    // Attach patient data to each queue entry
+    return queueEntries.map((entry) => {
+      const patient = patientMap[entry.referenceId?.toString()];
+      return {
+        _id: entry._id.toString(),
+        referenceId: entry.referenceId.toString(),
+        status: entry.status,
+        patientName: patient ? patient.name : "Unknown",
+        patientId: patient ? patient._id.toString() : null,
+        gender: patient ? patient.gender : "Unknown",
+        birthday: patient ? patient.birthday : null,
+        contact: patient ? patient.contact : null,
+        medicalHistory: patient ? patient.medical_history : [],
+        medications: patient ? patient.medications : [],
+        visitHistory: patient ? patient.visit_history : [],
+      };
+    });
   } catch (error) {
     console.log("Error loading queue entries: ", error);
     return [];
