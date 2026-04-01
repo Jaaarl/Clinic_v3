@@ -7,7 +7,7 @@ import VitalsSection from "./VitalsSection";
 import SOAPSection from "./SOAPSection";
 
 export default function VisitForm({
-  newVisit,
+  newVisit = {},
   name,
   gender,
   birthday,
@@ -121,27 +121,28 @@ function PrintPrescriptionButton({
   gender,
   fullAddress,
   resetInput,
-  newVisit,
+  newVisit = {},
   docName,
   lic,
   ptr,
   s2,
 }) {
+  const genderChar = gender?.[0]?.toUpperCase() ?? "M";
   return (
     <Link
       href={{
         pathname: "/reseta",
         query: {
-          name: encodeURIComponent(name),
-          birthday: encodeURIComponent(birthday),
-          address: encodeURIComponent(fullAddress),
-          sex: encodeURIComponent(gender[0].toUpperCase()),
-          req: encodeURIComponent(resetInput),
-          date: encodeURIComponent(newVisit.visit_date),
-          docName: encodeURIComponent(docName),
-          lic: encodeURIComponent(lic),
-          ptr: encodeURIComponent(ptr),
-          s2: encodeURIComponent(s2),
+          name: encodeURIComponent(name ?? ""),
+          birthday: encodeURIComponent(birthday ?? ""),
+          address: encodeURIComponent(fullAddress ?? ""),
+          sex: encodeURIComponent(genderChar),
+          req: encodeURIComponent(resetInput ?? ""),
+          date: encodeURIComponent(newVisit?.visit_date ?? ""),
+          docName: encodeURIComponent(docName ?? ""),
+          lic: encodeURIComponent(lic ?? ""),
+          ptr: encodeURIComponent(ptr ?? ""),
+          s2: encodeURIComponent(s2 ?? ""),
         },
       }}
     >
@@ -162,27 +163,28 @@ function PrintLabRequestButton({
   gender,
   fullAddress,
   labReq,
-  newVisit,
+  newVisit = {},
   docName,
   lic,
   ptr,
   s2,
 }) {
+  const genderChar = gender?.[0]?.toUpperCase() ?? "M";
   return (
     <Link
       href={{
         pathname: "/labReq",
         query: {
-          name: encodeURIComponent(name),
-          birthday: encodeURIComponent(birthday),
-          address: encodeURIComponent(fullAddress),
-          sex: encodeURIComponent(gender[0].toUpperCase()),
-          req: encodeURIComponent(labReq),
-          date: encodeURIComponent(newVisit.visit_date),
-          docName: encodeURIComponent(docName),
-          lic: encodeURIComponent(lic),
-          ptr: encodeURIComponent(ptr),
-          s2: encodeURIComponent(s2),
+          name: encodeURIComponent(name ?? ""),
+          birthday: encodeURIComponent(birthday ?? ""),
+          address: encodeURIComponent(fullAddress ?? ""),
+          sex: encodeURIComponent(genderChar),
+          req: encodeURIComponent(labReq ?? ""),
+          date: encodeURIComponent(newVisit?.visit_date ?? ""),
+          docName: encodeURIComponent(docName ?? ""),
+          lic: encodeURIComponent(lic ?? ""),
+          ptr: encodeURIComponent(ptr ?? ""),
+          s2: encodeURIComponent(s2 ?? ""),
         },
       }}
     >
@@ -201,34 +203,35 @@ function PrintMedicalFormButton({
   name,
   birthday,
   gender,
-  newVisit,
+  newVisit = {},
   docName,
   lic,
   ptr,
   s2,
 }) {
+  const genderUpper = gender?.toUpperCase() ?? "MALE";
   return (
     <Link
       href={{
         pathname: "/certificate",
         query: {
-          name: encodeURIComponent(name),
-          birthday: encodeURIComponent(birthday),
+          name: encodeURIComponent(name ?? ""),
+          birthday: encodeURIComponent(birthday ?? ""),
           address: encodeURIComponent(""), // Not used in certificate but kept for compatibility
-          sex: encodeURIComponent(gender.toUpperCase()),
-          req1: encodeURIComponent(newVisit.soap.assessment),
-          req2: encodeURIComponent(newVisit.soap.plan),
+          sex: encodeURIComponent(genderUpper),
+          req1: encodeURIComponent(newVisit?.soap?.assessment ?? ""),
+          req2: encodeURIComponent(newVisit?.soap?.plan ?? ""),
           date: encodeURIComponent(
-            new Date(newVisit.visit_date).toLocaleDateString("en-US", {
+            new Date(newVisit?.visit_date ?? new Date()).toLocaleDateString("en-US", {
               year: "numeric",
               month: "long",
               day: "numeric",
             })
           ),
-          docName: encodeURIComponent(docName),
-          lic: encodeURIComponent(lic),
-          ptr: encodeURIComponent(ptr),
-          s2: encodeURIComponent(s2),
+          docName: encodeURIComponent(docName ?? ""),
+          lic: encodeURIComponent(lic ?? ""),
+          ptr: encodeURIComponent(ptr ?? ""),
+          s2: encodeURIComponent(s2 ?? ""),
         },
       }}
     >
