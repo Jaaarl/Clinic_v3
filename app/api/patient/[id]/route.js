@@ -1,5 +1,6 @@
 import { patientService } from "@/lib/services/patientService";
 import { corsResponse, handleOptions } from "@/lib/utils/cors";
+import { revalidatePath } from "next/cache";
 
 export async function OPTIONS() { return handleOptions(); }
 
@@ -21,6 +22,11 @@ export async function PUT(request, { params }) {
     const data = await request.json();
     const patient = await patientService.updatePatient(id, data);
     if (!patient) return corsResponse({ error: "Patient not found" }, 404);
+
+    // Revalidate queue pages so changes appear immediately
+    revalidatePath("/queue");
+    revalidatePath("/queue/[id]", "page");
+
     return corsResponse({ message: "Patient updated", patient });
   } catch (error) {
     console.error("Error updating patient:", error);
