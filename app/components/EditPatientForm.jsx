@@ -15,7 +15,7 @@ export default function EditPatientForm({
   const [name, setName] = useState(name1);
   const [gender, setGender] = useState(gender1);
   const [birthday, setBirthday] = useState(
-    birthday1 ? birthday1.split("T")[0] : ""
+    birthday1 ? birthday1.split("T")[0] : "",
   );
 
   const [contact, setContact] = useState({
@@ -40,7 +40,7 @@ export default function EditPatientForm({
       name: med.name,
       dosage: med.dosage,
       frequency: med.freq,
-    }))
+    })),
   );
 
   const handleInputChange = (index, category, value) => {
@@ -113,8 +113,8 @@ export default function EditPatientForm({
         throw new Error("failed to update patient");
       }
       alert("Patient information updated successfully.");
-      router.back();
-      router.refresh();
+      window.history.go(-1);
+      setTimeout(() => window.location.reload(), 250);
     } catch (error) {
       console.log(error);
     }
