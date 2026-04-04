@@ -1,11 +1,13 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import Navbar from "../components/Navbar";
 
 const VISIT_REASONS = ["Initial Visit", "Follow-up", "Lab Result Reading"];
 
 export default function AppointmentsPage() {
+  const router = useRouter();
   const [appointments, setAppointments] = useState([]);
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [patientSearch, setPatientSearch] = useState("");
@@ -173,7 +175,7 @@ export default function AppointmentsPage() {
     }
   };
 
-  const handleCheckIn = async (appointmentId) => {
+  const handleCheckIn = async (appointmentId, patientId) => {
     try {
       const res = await fetch(`/api/appointments/${appointmentId}/checkin`, {
         method: "POST",
@@ -181,7 +183,8 @@ export default function AppointmentsPage() {
 
       if (res.ok) {
         fetchAppointments();
-        alert("Patient checked in successfully!");
+        // Redirect to AddQue page to fill vitals
+        router.push(`/addQue/${patientId}`);
       } else {
         const data = await res.json();
         setError(data.error || "Failed to check in");
@@ -463,7 +466,7 @@ export default function AppointmentsPage() {
                           {apt.status === "SCHEDULED" && (
                             <>
                               <button
-                                onClick={() => handleCheckIn(apt._id)}
+                                onClick={() => handleCheckIn(apt._id, apt.patientId._id)}
                                 className="text-sm px-2 py-1 bg-green-600 text-white rounded hover:bg-green-700"
                               >
                                 Check In
