@@ -29,7 +29,7 @@ export default function Navbar() {
         <Link href="/admin/inventorylog">Inventory log</Link>
         <Link href="/admin/queuelog">Queue log</Link>
         <Link href="/admin/sales">Sales</Link>
-        <Link href="/admin/doctor">Doctor</Link>
+        <Link href="/admin/doctors">Doctor</Link>
         <Link href="/inventory">Inventory</Link>
         <Link href="/appointments">Appointments</Link>
         <Link href="/queue-v2">Queue</Link>
