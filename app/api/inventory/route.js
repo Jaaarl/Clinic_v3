@@ -3,10 +3,14 @@ import { corsResponse, handleOptions } from "@/lib/utils/cors";
 
 export async function OPTIONS() { return handleOptions(); }
 
-export async function GET() {
+export async function GET(request) {
   try {
-    const inventoryItems = await inventoryService.getInventoryItems();
-    return corsResponse({ inventoryItems });
+    const { searchParams } = request.nextUrl;
+    const page = parseInt(searchParams.get("page")) || 1;
+    const limit = parseInt(searchParams.get("limit")) || 10;
+    
+    const result = await inventoryService.getInventoryItems(page, limit);
+    return corsResponse(result);
   } catch (error) {
     console.error("Error fetching inventory:", error);
     return corsResponse({ error: "Failed to fetch inventory" }, 500);
