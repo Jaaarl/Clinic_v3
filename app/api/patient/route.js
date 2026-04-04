@@ -7,8 +7,11 @@ export async function GET(request) {
   try {
     const { searchParams } = request.nextUrl;
     const searchQuery = searchParams.get("search");
-    const patients = await patientService.getPatients(searchQuery);
-    return corsResponse({ patients });
+    const page = parseInt(searchParams.get("page")) || 1;
+    const limit = parseInt(searchParams.get("limit")) || 10;
+    
+    const result = await patientService.getPatients(searchQuery, page, limit);
+    return corsResponse(result);
   } catch (error) {
     console.error("Error fetching patients:", error);
     return corsResponse({ error: "Failed to fetch patients" }, 500);
@@ -23,18 +26,5 @@ export async function POST(request) {
   } catch (error) {
     console.error("Error creating patient:", error);
     return corsResponse({ error: error.message || "Failed to create patient" }, 400);
-  }
-}
-
-export async function DELETE(request) {
-  try {
-    const { searchParams } = request.nextUrl;
-    const id = searchParams.get("id");
-    if (!id) return corsResponse({ error: "ID is required" }, 400);
-    await patientService.deletePatient(id);
-    return corsResponse({ message: "Patient deleted" });
-  } catch (error) {
-    console.error("Error deleting patient:", error);
-    return corsResponse({ error: "Failed to delete patient" }, 500);
   }
 }
