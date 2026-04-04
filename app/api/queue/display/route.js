@@ -8,13 +8,10 @@ export async function GET(request) {
     const { searchParams } = request.nextUrl;
     const doctorId = searchParams.get("doctorId");
 
-    const queue = doctorId
-      ? await queueService.getDoctorQueue(doctorId)
-      : await queueService.getTodayQueue();
-
-    return corsResponse({ queue });
+    const displayData = await queueService.getDisplayData(doctorId);
+    return corsResponse({ displayData });
   } catch (error) {
-    console.error("Error fetching queue:", error);
-    return corsResponse({ error: "Failed to fetch queue" }, 500);
+    console.error("Error fetching display data:", error);
+    return corsResponse({ error: "Failed to fetch display data" }, 500);
   }
 }
