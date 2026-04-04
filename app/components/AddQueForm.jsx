@@ -3,6 +3,9 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 export default function AddQueForm({
   id,
+  appointmentId,
+  doctorId,
+  visitReason,
   name1,
   gender1,
   birthday1,
@@ -131,16 +134,24 @@ export default function AddQueForm({
         throw new Error("Failed to update patient");
       }
 
-      const response = await fetch("/api/queue", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ referenceId: id }),
-      });
+      // Only add to queue if this is from a scheduled appointment
+      if (appointmentId && doctorId) {
+        const queueResponse = await fetch("/api/queue", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            patientId: id,
+            doctorId: doctorId,
+            appointmentId: appointmentId,
+            visitReason: visitReason || "Scheduled Appointment",
+          }),
+        });
 
-      if (!response.ok) {
-        throw new Error("Failed to add to queue");
+        if (!queueResponse.ok) {
+          throw new Error("Failed to add to queue");
+        }
       }
       router.push("/");
       router.refresh();

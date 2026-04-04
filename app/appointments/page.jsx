@@ -175,24 +175,14 @@ export default function AppointmentsPage() {
     }
   };
 
-  const handleCheckIn = async (appointmentId, patientId) => {
-    try {
-      const res = await fetch(`/api/appointments/${appointmentId}/checkin`, {
-        method: "POST",
-      });
-
-      if (res.ok) {
-        fetchAppointments();
-        // Redirect to AddQue page to fill vitals
-        router.push(`/addQue/${patientId}`);
-      } else {
-        const data = await res.json();
-        setError(data.error || "Failed to check in");
-      }
-    } catch (err) {
-      setError("Error checking in patient");
-      console.error(err);
-    }
+  const handleCheckIn = async (appointmentId, patientId, doctorId, visitReason) => {
+    // Redirect to AddQue page - queue entry will be created when vitals are submitted
+    const params = new URLSearchParams({
+      appointmentId: appointmentId || "",
+      doctorId: doctorId || "",
+      visitReason: visitReason || "",
+    });
+    router.push(`/addQue/${patientId}?${params.toString()}`);
   };
 
   const selectPatient = (patient) => {
@@ -466,7 +456,7 @@ export default function AppointmentsPage() {
                           {apt.status === "SCHEDULED" && (
                             <>
                               <button
-                                onClick={() => handleCheckIn(apt._id, apt.patientId._id)}
+                                onClick={() => handleCheckIn(apt._id, apt.patientId._id, apt.doctorId?._id, apt.visitReason)}
                                 className="text-sm px-2 py-1 bg-green-600 text-white rounded hover:bg-green-700"
                               >
                                 Check In
