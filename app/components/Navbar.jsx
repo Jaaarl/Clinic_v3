@@ -31,7 +31,8 @@ export default function Navbar() {
         <Link href="/admin/sales">Sales</Link>
         <Link href="/admin/doctor">Doctor</Link>
         <Link href="/inventory">Inventory</Link>
-        <Link href="/queue">Queue</Link>
+        <Link href="/appointments">Appointments</Link>
+        <Link href="/queue-v2">Queue</Link>
       </div>
     </nav>
   );
