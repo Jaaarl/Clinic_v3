@@ -476,12 +476,12 @@ export default function AppointmentsPage() {
                               </button>
                             </>
                           )}
-                          {apt.status === "DONE" && (
+                          {apt.status === "DONE" && apt.queueEntryId && (
                             <a
-                              href={`/addQue/${apt.patientId?._id}`}
+                              href={`/queue/${apt.queueEntryId}`}
                               className="text-sm px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
                             >
-                              Add Vitals
+                              Check Vitals
                             </a>
                           )}
                         </div>

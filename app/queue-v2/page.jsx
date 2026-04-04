@@ -180,10 +180,10 @@ export default function QueuePage() {
                   <div className="flex gap-2">
                     {/* Vital Signs Button - always visible */}
                     <a
-                      href={`/addQue/${entry.patientId?._id}`}
+                      href={`/queue/${entry._id}`}
                       className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700"
                     >
-                      Add Vitals
+                      Check Vitals
                     </a>
                     {entry.status === "WAITING" && (
                       <>
