@@ -2,10 +2,32 @@ import { NextResponse } from "next/server";
 
 const PUBLIC_PATHS = ["/api/clinic-info"];
 
+const CORS_HEADERS = {
+  "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+  "Access-Control-Allow-Headers":
+    "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization",
+};
+
+const getAllowedOrigin = () => {
+  return process.env.ALLOWED_ORIGIN || "*";
+};
+
+const setCorsHeaders = (response) => {
+  const origin = getAllowedOrigin();
+  if (origin !== "*") {
+    response.headers.set("Access-Control-Allow-Credentials", "true");
+  }
+  response.headers.set("Access-Control-Allow-Origin", origin);
+  Object.entries(CORS_HEADERS).forEach(([key, value]) => {
+    response.headers.set(key, value);
+  });
+  return response;
+};
+
 export function middleware(request) {
   const { pathname } = request.nextUrl;
 
-  // Allow CORS preflight requests
+  // Allow CORS preflight requests to pass through to route handlers
   if (request.method === "OPTIONS") {
     return NextResponse.next();
   }
@@ -26,18 +48,20 @@ export function middleware(request) {
 
   // Verify Bearer token
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return NextResponse.json(
+    const response = NextResponse.json(
       { error: "Unauthorized: Missing or invalid Authorization header" },
       { status: 401 }
     );
+    return setCorsHeaders(response);
   }
 
   const token = authHeader.substring(7); // Remove "Bearer " prefix
   if (token !== expectedKey) {
-    return NextResponse.json(
+    const response = NextResponse.json(
       { error: "Unauthorized: Invalid API key" },
       { status: 401 }
     );
+    return setCorsHeaders(response);
   }
 
   return NextResponse.next();
