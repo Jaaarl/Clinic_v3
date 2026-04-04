@@ -47,7 +47,8 @@ export default function DoctorsPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("/api/doctor", {
+      const url = editingDoctor ? `/api/doctor/${editingDoctor._id}` : "/api/doctor";
+      const res = await fetch(url, {
         method: editingDoctor ? "PATCH" : "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(doctorForm),
