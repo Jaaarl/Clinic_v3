@@ -14,21 +14,27 @@ export default function InventoryPage() {
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
+  const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0, totalPages: 0, hasMore: false });
 
   useEffect(() => {
-    fetchInventoryData();
+    fetchInventoryData(pagination.page);
   }, []);
 
-  const fetchInventoryData = async () => {
+  const fetchInventoryData = async (page = 1) => {
     try {
       setLoading(true);
-      const response = await fetch("/api/inventory", {
+      const response = await fetch(`/api/inventory?page=${page}&limit=${pagination.limit}`, {
         cache: "no-store",
       });
       const result = await response.json();
 
-      if (result.inventoryItems) {
-        setInventoryData(result.inventoryItems);
+      if (result.items) {
+        setInventoryData(result.items);
+        setPagination(prev => ({
+          ...prev,
+          ...result.pagination,
+          page
+        }));
       } else {
         setError("Failed to fetch inventory data");
       }
@@ -37,6 +43,12 @@ export default function InventoryPage() {
       console.error("Error:", err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= pagination.totalPages) {
+      fetchInventoryData(newPage);
     }
   };
 
@@ -244,8 +256,9 @@ export default function InventoryPage() {
                   Inventory Management
                 </h1>
                 <p className="text-gray-600 mt-1">
-                  Total Items: {inventoryData.length} | Showing:{" "}
-                  {filteredAndSortedData.length}
+                  Total Items: {pagination.total} | Showing:{" "}
+                  {filteredAndSortedData.length} of {pagination.total} | Page{" "}
+                  {pagination.page} of {pagination.totalPages || 1}
                 </p>
               </div>
               <div className="flex gap-2">
@@ -537,6 +550,37 @@ export default function InventoryPage() {
                   </tbody>
                 </table>
               </div>
+
+              {/* Pagination Controls */}
+              {pagination.totalPages > 1 && (
+                <div className="flex justify-center items-center gap-2 py-4 bg-white border-t">
+                  <button
+                    onClick={() => handlePageChange(pagination.page - 1)}
+                    disabled={pagination.page <= 1}
+                    className={`px-4 py-2 rounded-lg ${
+                      pagination.page <= 1
+                        ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                        : "bg-blue-600 text-white hover:bg-blue-700"
+                    }`}
+                  >
+                    Previous
+                  </button>
+                  <span className="px-4 py-2 text-gray-700">
+                    Page {pagination.page} of {pagination.totalPages}
+                  </span>
+                  <button
+                    onClick={() => handlePageChange(pagination.page + 1)}
+                    disabled={!pagination.hasMore}
+                    className={`px-4 py-2 rounded-lg ${
+                      !pagination.hasMore
+                        ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                        : "bg-blue-600 text-white hover:bg-blue-700"
+                    }`}
+                  >
+                    Next
+                  </button>
+                </div>
+              )}
             </div>
           )}
 
