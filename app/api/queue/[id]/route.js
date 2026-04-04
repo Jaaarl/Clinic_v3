@@ -9,7 +9,9 @@ export async function GET(request, { params }) {
     if (!entry) {
       return corsResponse({ error: "Queue entry not found" }, 404);
     }
-    return corsResponse({ queueEntry: entry });
+    // Extract patient from the populated patientId field
+    const patient = entry.patientId;
+    return corsResponse({ queueEntry: entry, patient });
   } catch (error) {
     console.error("Error fetching queue entry:", error);
     return corsResponse({ error: "Failed to fetch queue entry" }, 500);
