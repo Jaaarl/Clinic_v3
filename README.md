@@ -1,34 +1,107 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Clinic_v3
+
+AI-powered clinic management system with autonomous appointment scheduling agent.
+
+## Features
+
+### Management System (Next.js)
+- Patient records management
+- SOAP documentation
+- Appointment scheduling
+- Prescription handling
+- Medical certificate issuance
+- Analytics dashboard
+- Inventory management
+
+### AI Scheduling Agent
+- Autonomous email-based appointment booking
+- Natural language processing for reservation requests
+- Automated patient registration
+- Smart conflict resolution with alternative suggestions
+- Email confirmations and notifications
+
+## Tech Stack
+
+**Frontend:** Next.js 14, React, Tailwind CSS  
+**Backend:** MongoDB, REST API  
+**AI Agent:** OpenClaw, Himalaya (Email CLI)
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+- Node.js 18+
+- MongoDB (local or Atlas)
+- npm or yarn
+
+### Installation
 
 ```bash
+# Clone the repository
+git clone https://github.com/Jaaarl/Clinic_v3.git
+cd Clinic_v3
+
+# Install dependencies
+npm install
+
+# Set up environment variables
+cp .env.example .env.local
+# Edit .env.local with your MongoDB URI and API key
+
+# Start development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Environment Variables
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+```env
+MONGODB_URI=mongodb://localhost:27017/clinic
+ALLOWED_ORIGIN=http://localhost:3000
+API_KEY=your-secret-api-key
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### API Endpoints
 
-## Learn More
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/doctor` | List all doctors |
+| POST | `/api/doctor` | Add new doctor |
+| GET | `/api/patient` | Search patients |
+| POST | `/api/patient` | Register patient |
+| GET | `/api/appointments` | List appointments |
+| POST | `/api/appointments` | Book appointment |
+| GET | `/api/doctors/:id/schedule/slots` | Get available slots |
 
-To learn more about Next.js, take a look at the following resources:
+## AI Agent Setup
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The scheduling agent runs separately and monitors email for reservation requests.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+```bash
+# Install himalaya (email CLI)
+curl -sSL https://github.com/pimalaya/himalaya/releases/latest/download/himalaya.x86_64-linux.tgz | tar xz -C ~/.local/bin
 
-## Deploy on Vercel
+# Configure email account
+~/.local/bin/himalaya account configure clinic
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+See `skills/front-desk/` for agent configuration.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Project Structure
+
+```
+Clinic_v3/
+├── app/                    # Next.js app router
+│   └── api/               # API routes
+│       ├── doctor/
+│       ├── patient/
+│       └── appointments/
+├── lib/                    # Utilities & services
+│   ├── models/            # MongoDB models
+│   └── services/          # Business logic
+├── models/                 # Mongoose schemas
+└── skills/                # AI agent skills
+    └── front-desk/
+```
+
+## License
+
+MIT

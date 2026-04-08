@@ -15,8 +15,11 @@ const getPatientById = async (id) => {
   return res.json();
 };
 
-export default async function AddQue({ params }) {
+export default async function AddQue({ params, searchParams }) {
   const { id } = params;
+  const appointmentId = searchParams.appointmentId;
+  const doctorId = searchParams.doctorId;
+  const visitReason = searchParams.visitReason;
   const { patient } = await getPatientById(id);
   const {
     name,
@@ -53,6 +56,9 @@ export default async function AddQue({ params }) {
             </p>
             <AddQueForm
               id={id}
+              appointmentId={appointmentId}
+              doctorId={doctorId}
+              visitReason={visitReason}
               name1={name}
               gender1={gender}
               birthday1={birthday}

@@ -62,7 +62,7 @@ export default function EditQueForm({
           temperature: "",
         },
         form: {
-          reseta: resetInput,
+          reseta: "",
           labReq: "",
         },
       };
