@@ -3,21 +3,34 @@
 import Head from "next/head";
 import { FaPrescription } from "react-icons/fa";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { calculateAge } from "@/lib/utils/dateUtils";
+
+function decodeTwice(encodedStr) {
+  if (!encodedStr) return "";
+  const firstDecode = decodeURIComponent(encodedStr);
+  const finalDecode = decodeURIComponent(firstDecode);
+  return finalDecode;
+}
 
 export default function Reseta({
-  reqs,
-  name,
-  age,
-  gender,
-  address,
-  date,
-  docName,
-  lic,
-  ptr,
-  s2,
+  name: propName,
+  age: propAge,
+  gender: propGender,
+  address: propAddress,
+  date: propDate,
+  docName: propDocName,
+  lic: propLic,
+  ptr: propPtr,
+  s2: propS2,
 }) {
+  const searchParams = useSearchParams();
+  const patientId = searchParams.get("patientId");
+  const visitDate = searchParams.get("visitDate");
+
   const [clinicInfo, setClinicInfo] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [prescription, setPrescription] = useState({ reqs: "", labReq: "" });
 
   useEffect(() => {
     const fetchClinicInfo = async () => {
@@ -32,12 +45,41 @@ export default function Reseta({
       }
     };
 
+    const fetchPrescription = async () => {
+      if (!patientId || !visitDate) return;
+
+      try {
+        const res = await fetch(
+          `/api/prescription?patientId=${patientId}&visitDate=${encodeURIComponent(visitDate)}`
+        );
+        const data = await res.json();
+        if (data.prescription !== undefined) {
+          setPrescription({ reqs: data.prescription });
+        }
+      } catch (error) {
+        console.error("Error fetching prescription:", error);
+      }
+    };
+
     fetchClinicInfo();
-  }, []);
+    fetchPrescription();
+  }, [patientId, visitDate]);
 
   if (loading) {
     return <div className="p-4">Loading...</div>;
   }
+
+  const name = propName || searchParams.get("name") || "";
+  const age = propAge || calculateAge(decodeTwice(searchParams.get("birthday") || ""));
+  const gender = propGender || searchParams.get("sex") || "";
+  const address = propAddress || decodeTwice(searchParams.get("address") || "");
+  const date = propDate || searchParams.get("date") || "";
+  const docName = propDocName || decodeURIComponent(searchParams.get("docName") || "");
+  const lic = propLic || decodeURIComponent(searchParams.get("lic") || "");
+  const ptr = propPtr || decodeURIComponent(searchParams.get("ptr") || "");
+  const s2 = propS2 || decodeURIComponent(searchParams.get("s2") || "");
+
+  const reqs = prescription.reqs || decodeTwice(searchParams.get("req") || "");
 
   // Format full address from parts
   const formatAddress = (addr) => {

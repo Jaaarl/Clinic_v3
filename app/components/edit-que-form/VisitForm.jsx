@@ -75,6 +75,8 @@ export default function VisitForm({
             Update Visit
           </button>
           <PrintPrescriptionButton
+            patientId={newVisit.patientId}
+            visitDate={newVisit.visit_date}
             name={name}
             birthday={birthday}
             gender={gender}
@@ -116,11 +118,12 @@ export default function VisitForm({
 
 // Print Prescription Button
 function PrintPrescriptionButton({
+  patientId,
+  visitDate,
   name,
   birthday,
   gender,
   fullAddress,
-  resetInput,
   newVisit = {},
   docName,
   lic,
@@ -133,11 +136,12 @@ function PrintPrescriptionButton({
       href={{
         pathname: "/reseta",
         query: {
+          patientId: patientId || "",
+          visitDate: visitDate || "",
           name: encodeURIComponent(name ?? ""),
           birthday: encodeURIComponent(birthday ?? ""),
           address: encodeURIComponent(fullAddress ?? ""),
           sex: encodeURIComponent(genderChar),
-          req: encodeURIComponent(resetInput ?? ""),
           date: encodeURIComponent(newVisit?.visit_date ?? ""),
           docName: encodeURIComponent(docName ?? ""),
           lic: encodeURIComponent(lic ?? ""),

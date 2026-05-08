@@ -47,6 +47,7 @@ export default function EditQueForm({
     if (visit_history1.length === 0) {
       return {
         visit_date: new Date().toISOString().split("T")[0],
+        patientId: id,
         soap: {
           subjective: "",
           objective: "",
@@ -62,7 +63,7 @@ export default function EditQueForm({
           temperature: "",
         },
         form: {
-          reseta: resetInput,
+          reseta: "",
           labReq: "",
         },
       };
@@ -72,6 +73,7 @@ export default function EditQueForm({
     return {
       visit_date:
         latestVisit.visit_date || new Date().toISOString().split("T")[0],
+      patientId: id,
       soap: {
         subjective: latestVisit.soap.subjective || "",
         objective: latestVisit.soap.objective || "",
@@ -116,6 +118,16 @@ export default function EditQueForm({
     }
   };
 
+  const handleResetInput = (newValue) => {
+    setNewVisit((prevState) => ({
+      ...prevState,
+      form: {
+        ...prevState.form,
+        reseta: newValue,
+      },
+    }));
+  };
+
   // Handler for form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -126,7 +138,7 @@ export default function EditQueForm({
       soap: newVisit.soap,
       vitals: newVisit.vitals,
       form: {
-        reseta: resetInput,
+        reseta: newVisit.form.reseta,
         labReq: newVisit.form.labReq,
       },
     };
@@ -168,12 +180,6 @@ export default function EditQueForm({
     }
   };
 
-  const [resetInput, setResetInput] = useState("");
-
-  const handleResetInput = (newValue) => {
-    setResetInput(newValue);
-  };
-
   const fullAddress =
     contact.address.street +
     ", " +
@@ -206,7 +212,6 @@ export default function EditQueForm({
         lic={lic}
         ptr={ptr}
         s2={s2}
-        resetInput={resetInput}
         onInputChange={handleInputChange}
         onResetInput={handleResetInput}
         onSubmit={handleSubmit}
