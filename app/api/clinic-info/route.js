@@ -18,10 +18,7 @@ export async function GET() {
 export async function PUT(request) {
   try {
     const data = await request.json();
-    console.log("PUT /api/clinic-info - received:", JSON.stringify(data, null, 2));
-    
     const result = await clinicInfoService.updateClinicInfo(data);
-    console.log("PUT /api/clinic-info - result:", JSON.stringify(result, null, 2));
     
     return corsResponse({ message: "Clinic info updated", clinicInfo: result });
   } catch (error) {
