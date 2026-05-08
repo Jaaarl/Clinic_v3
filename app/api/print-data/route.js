@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { patientService } from "@/lib/services/patientService";
 import { doctorService } from "@/lib/services/doctorService";
+import { generateResetaText } from "@/lib/utils/prescriptionUtils";
 
 export async function GET(request) {
   try {
@@ -43,6 +44,12 @@ export async function GET(request) {
     const addr = patient.contact?.address || {};
     const addressStr = [addr.street, addr.city, addr.province].filter(Boolean).join(", ") || "";
 
+    // Build prescription text: use reseta, or generate from structured prescriptions
+    let prescription = visit.form?.reseta || "";
+    if (!prescription && visit.form?.prescriptions?.length) {
+      prescription = generateResetaText(visit.form.prescriptions);
+    }
+
     return NextResponse.json({
       patient: {
         name: patient.name || "",
@@ -53,7 +60,7 @@ export async function GET(request) {
       visit: {
         date: visit.visit_date || "",
       },
-      prescription: visit.form?.reseta || "",
+      prescription,
       labReq: visit.form?.labReq || "",
       assessment: visit.soap?.assessment || "",
       plan: visit.soap?.plan || "",

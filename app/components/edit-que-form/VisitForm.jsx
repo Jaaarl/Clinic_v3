@@ -2,14 +2,14 @@
 // Main edit visit form: vitals, SOAP notes, prescription, lab requests, print buttons
 
 import Link from "next/link";
-import AutoCompleteResta from "@/app/components/AutoCompleteResta";
+import PrescriptionList from "./PrescriptionList";
 import VitalsSection from "./VitalsSection";
 import SOAPSection from "./SOAPSection";
 
 export default function VisitForm({
   newVisit = {},
   onInputChange,
-  onResetInput,
+  onPrescriptionsChange,
   onSubmit,
 }) {
   return (
@@ -38,9 +38,9 @@ export default function VisitForm({
           <label className="block text-sm font-medium mb-1">
             Prescription:
           </label>
-          <AutoCompleteResta
-            reseta={newVisit.form.reseta}
-            onInputChange={onResetInput}
+          <PrescriptionList
+            prescriptions={newVisit.form?.prescriptions || []}
+            onPrescriptionsChange={onPrescriptionsChange}
           />
         </div>
 

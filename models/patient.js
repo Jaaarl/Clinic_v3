@@ -48,6 +48,15 @@ const patientSchema = new Schema({
       form: {
         reseta: String,
         labReq: String,
+        prescriptions: [
+          {
+            name: String,
+            dosage: String,
+            frequency: String,
+            duration: String,
+            instructions: String,
+          },
+        ],
       },
     },
   ],

@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import PatientInfoPanel from "./edit-que-form/PatientInfoPanel";
 import VisitForm from "./edit-que-form/VisitForm";
+import { generateResetaText } from "@/lib/utils/prescriptionUtils";
 
 export default function EditQueForm({
   id,
@@ -65,6 +66,7 @@ export default function EditQueForm({
         form: {
           reseta: "",
           labReq: "",
+          prescriptions: [],
         },
       };
     }
@@ -89,8 +91,9 @@ export default function EditQueForm({
         temperature: latestVisit.vitals.temperature || "",
       },
       form: {
-        reseta: latestVisit.form.reseta || "",
-        labReq: latestVisit.form.labReq || "",
+        reseta: latestVisit.form?.reseta || "",
+        labReq: latestVisit.form?.labReq || "",
+        prescriptions: latestVisit.form?.prescriptions || [],
       },
     };
   };
@@ -118,12 +121,14 @@ export default function EditQueForm({
     }
   };
 
-  const handleResetInput = (newValue) => {
+  const handlePrescriptionsChange = (prescriptions) => {
+    const generatedReseta = generateResetaText(prescriptions);
     setNewVisit((prevState) => ({
       ...prevState,
       form: {
         ...prevState.form,
-        reseta: newValue,
+        prescriptions,
+        reseta: generatedReseta,
       },
     }));
   };
@@ -140,6 +145,7 @@ export default function EditQueForm({
       form: {
         reseta: newVisit.form.reseta,
         labReq: newVisit.form.labReq,
+        prescriptions: newVisit.form.prescriptions,
       },
     };
 
@@ -205,7 +211,7 @@ export default function EditQueForm({
       <VisitForm
         newVisit={newVisit}
         onInputChange={handleInputChange}
-        onResetInput={handleResetInput}
+        onPrescriptionsChange={handlePrescriptionsChange}
         onSubmit={handleSubmit}
       />
     </div>

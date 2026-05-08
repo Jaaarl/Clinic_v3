@@ -128,9 +128,21 @@ function VisitHistoryItem({ visit }) {
           <p className="text-sm">Plan: {visit?.soap?.plan || "N/A"}</p>
           <br />
           <p className="text-sm">
-            Prescription: <br />
-            {visit?.form?.reseta
-              ? decodeTwice(visit.form.reseta)
+            Prescription:{" "}
+            {visit?.form?.prescriptions?.length > 0 ? (
+              <ul className="list-disc list-inside mt-1">
+                {visit.form.prescriptions.map((p, i) => (
+                  <li key={i}>
+                    <strong>{p.name}</strong>
+                    {p.dosage ? ` ${p.dosage}` : ""}
+                    {p.frequency ? ` - ${p.frequency}` : ""}
+                    {p.duration ? ` for ${p.duration}` : ""}
+                    {p.instructions ? ` (${p.instructions})` : ""}
+                  </li>
+                ))}
+              </ul>
+            ) : visit?.form?.reseta ? (
+              decodeTwice(visit.form.reseta)
                   .split("\n")
                   .map((line, i) => (
                     <React.Fragment key={i}>
@@ -138,7 +150,9 @@ function VisitHistoryItem({ visit }) {
                       <br />
                     </React.Fragment>
                   ))
-              : "N/A"}
+            ) : (
+              "N/A"
+            )}
           </p>
 
           <p className="text-sm">
