@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import { useAuth } from "./AuthContext";
 
 export default function Navbar() {
   const [clinicName, setClinicName] = useState("CLINIC_NAME");
+  const { logout } = useAuth();
 
   useEffect(() => {
     const fetchClinicInfo = async () => {
@@ -25,13 +27,16 @@ export default function Navbar() {
   return (
     <nav className="flex items-center justify-between gap-3 p-4 bg-gray-800 text-white">
       <Link href="/">{clinicName}</Link>
-      <div className="flex gap-4">
+      <div className="flex gap-4 items-center">
         <Link href="/admin/inventorylog">Inventory log</Link>
         <Link href="/admin/queuelog">Queue log</Link>
         <Link href="/admin/sales">Sales</Link>
         <Link href="/admin/doctor">Doctor</Link>
         <Link href="/inventory">Inventory</Link>
         <Link href="/queue">Queue</Link>
+        <button onClick={logout} className="px-3 py-1 rounded hover:bg-gray-700">
+          Logout
+        </button>
       </div>
     </nav>
   );
