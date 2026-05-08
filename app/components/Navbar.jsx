@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "./AuthContext";
 
 export default function Navbar() {
-  const [clinicName, setClinicName] = useState("CLINIC_NAME");
+  const [clinicName, setClinicName] = useState("");
   const { logout } = useAuth();
 
   useEffect(() => {
@@ -13,8 +13,8 @@ export default function Navbar() {
       try {
         const res = await fetch("/api/clinic-info");
         const data = await res.json();
-        if (data.clinicInfo?.name) {
-          setClinicName(data.clinicInfo.name);
+        if (data.clinicInfo?.clinics?.[0]?.name) {
+          setClinicName(data.clinicInfo.clinics[0].name);
         }
       } catch (error) {
         console.error("Error fetching clinic info:", error);
@@ -26,8 +26,9 @@ export default function Navbar() {
 
   return (
     <nav className="flex items-center justify-between gap-3 p-4 bg-gray-800 text-white">
-      <Link href="/">{clinicName}</Link>
+      <Link href="/">{clinicName || "Default Clinic Name"}</Link>
       <div className="flex gap-4 items-center">
+        <Link href="/admin/clinic">Clinic Settings</Link>
         <Link href="/admin/inventorylog">Inventory log</Link>
         <Link href="/admin/queuelog">Queue log</Link>
         <Link href="/admin/sales">Sales</Link>

@@ -63,11 +63,11 @@ export default function Reseta({ patientId, visitDate, size = "a6" }) {
   const age = calculateAge(birthday);
 
   const formatAddress = (addr) => {
-    if (!addr) return "CLINIC_ADDRESS";
+    if (!addr) return "Default Clinic Address";
     const parts = [addr.street, addr.city, addr.province, addr.zip].filter(
       (p) => p && p.trim()
     );
-    return parts.join(", ") || "CLINIC_ADDRESS";
+    return parts.join(", ") || "Default Clinic Address";
   };
 
   const clinics = clinicInfo?.clinics || [];
@@ -91,7 +91,7 @@ export default function Reseta({ patientId, visitDate, size = "a6" }) {
         {clinics.map((clinic, clinicIndex) => (
           <div key={clinicIndex} className={textSize}>
             <h1 className="mt-2 font-bold text-center">
-              {clinic.name || "CLINIC_NAME"}
+              {clinic.name || "Default Clinic Name"}
             </h1>
             {clinic.addresses?.map((addr, addrIndex) => (
               <h2 key={addrIndex} className="text-center">
@@ -111,10 +111,14 @@ export default function Reseta({ patientId, visitDate, size = "a6" }) {
 
         {clinics.length === 0 && (
           <div className={textSize}>
-            <h1 className="mt-2 font-bold text-center">CLINIC_NAME</h1>
-            <h2 className="text-center">CLINIC_ADDRESS</h2>
+            <h1 className="mt-2 font-bold text-center">{clinicInfo?.clinics?.[0]?.name || "Default Clinic Name"}</h1>
+            <h2 className="text-center">{formatAddress(clinicInfo?.clinics?.[0]?.addresses?.[0])}</h2>
             <h3 className="font-bold text-center underline">CLINIC HOURS:</h3>
-            <h4 className="text-center">CLINIC_HOURS</h4>
+            <h4 className="text-center">{
+              clinicInfo?.clinics?.[0]?.operatingHours?.length > 0
+                ? clinicInfo.clinics[0].operatingHours.map(h => h.schedule).join(", ")
+                : ""
+            }</h4>
           </div>
         )}
       </main>

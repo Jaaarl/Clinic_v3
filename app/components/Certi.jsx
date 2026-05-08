@@ -62,13 +62,13 @@ export default function Certi({ patientId, visitDate }) {
 
   const age = calculateAge(birthday);
 
-  const primaryAddress = clinicInfo?.addresses?.[0];
+  const primaryAddress = clinicInfo?.clinics?.[0]?.addresses?.[0];
   const formatAddress = (addr) => {
-    if (!addr) return "CLINIC_ADDRESS";
+    if (!addr) return "Default Clinic Address";
     const parts = [addr.street, addr.city, addr.province, addr.zip].filter(
       (p) => p && p.trim()
     );
-    return parts.join(", ") || "CLINIC_ADDRESS";
+    return parts.join(", ") || "Default Clinic Address";
   };
 
   return (
@@ -84,7 +84,7 @@ export default function Certi({ patientId, visitDate }) {
           <div className="bg-white rounded-lg">
             <div className="text-center">
               <h1 className="mt-2 font-bold">
-                {clinicInfo?.name || "CLINIC_NAME"}
+                {clinicInfo?.clinics?.[0]?.name || "Default Clinic Name"}
               </h1>
               <h2>{formatAddress(primaryAddress)}</h2>
             </div>

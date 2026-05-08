@@ -60,20 +60,20 @@ export default function LabReqForm({ patientId, visitDate }) {
 
   const age = calculateAge(birthday);
 
-  const primaryAddress = clinicInfo?.addresses?.[0];
+  const primaryAddress = clinicInfo?.clinics?.[0]?.addresses?.[0];
   const formatAddress = (addr) => {
-    if (!addr) return "CLINIC_ADDRESS";
+    if (!addr) return "Default Clinic Address";
     const parts = [addr.street, addr.city, addr.province, addr.zip].filter(
       (p) => p && p.trim()
     );
-    return parts.join(", ") || "CLINIC_ADDRESS";
+    return parts.join(", ") || "Default Clinic Address";
   };
 
   return (
     <div className="p-4 max-w-md mx-auto font-sans">
       <main>
         <h1 className="text-xs font-bold text-center">
-          {clinicInfo?.name || "CLINIC_NAME"}
+          {clinicInfo?.clinics?.[0]?.name || "Default Clinic Name"}
         </h1>
         <h2 className="text-xs text-center">{formatAddress(primaryAddress)}</h2>
 
