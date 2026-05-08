@@ -8,15 +8,6 @@ import SOAPSection from "./SOAPSection";
 
 export default function VisitForm({
   newVisit = {},
-  name,
-  gender,
-  birthday,
-  fullAddress,
-  docName,
-  lic,
-  ptr,
-  s2,
-  resetInput,
   onInputChange,
   onResetInput,
   onSubmit,
@@ -77,38 +68,14 @@ export default function VisitForm({
           <PrintPrescriptionButton
             patientId={newVisit.patientId}
             visitDate={newVisit.visit_date}
-            name={name}
-            birthday={birthday}
-            gender={gender}
-            fullAddress={fullAddress}
-            resetInput={resetInput}
-            newVisit={newVisit}
-            docName={docName}
-            lic={lic}
-            ptr={ptr}
-            s2={s2}
           />
           <PrintLabRequestButton
-            name={name}
-            birthday={birthday}
-            gender={gender}
-            fullAddress={fullAddress}
-            labReq={newVisit.form.labReq}
-            newVisit={newVisit}
-            docName={docName}
-            lic={lic}
-            ptr={ptr}
-            s2={s2}
+            patientId={newVisit.patientId}
+            visitDate={newVisit.visit_date}
           />
           <PrintMedicalFormButton
-            name={name}
-            birthday={birthday}
-            gender={gender}
-            newVisit={newVisit}
-            docName={docName}
-            lic={lic}
-            ptr={ptr}
-            s2={s2}
+            patientId={newVisit.patientId}
+            visitDate={newVisit.visit_date}
           />
         </div>
       </form>
@@ -117,20 +84,7 @@ export default function VisitForm({
 }
 
 // Print Prescription Button
-function PrintPrescriptionButton({
-  patientId,
-  visitDate,
-  name,
-  birthday,
-  gender,
-  fullAddress,
-  newVisit = {},
-  docName,
-  lic,
-  ptr,
-  s2,
-}) {
-  const genderChar = gender?.[0]?.toUpperCase() ?? "M";
+function PrintPrescriptionButton({ patientId, visitDate }) {
   return (
     <Link
       href={{
@@ -138,15 +92,6 @@ function PrintPrescriptionButton({
         query: {
           patientId: patientId || "",
           visitDate: visitDate || "",
-          name: encodeURIComponent(name ?? ""),
-          birthday: encodeURIComponent(birthday ?? ""),
-          address: encodeURIComponent(fullAddress ?? ""),
-          sex: encodeURIComponent(genderChar),
-          date: encodeURIComponent(newVisit?.visit_date ?? ""),
-          docName: encodeURIComponent(docName ?? ""),
-          lic: encodeURIComponent(lic ?? ""),
-          ptr: encodeURIComponent(ptr ?? ""),
-          s2: encodeURIComponent(s2 ?? ""),
         },
       }}
     >
@@ -161,34 +106,14 @@ function PrintPrescriptionButton({
 }
 
 // Print Lab Request Button
-function PrintLabRequestButton({
-  name,
-  birthday,
-  gender,
-  fullAddress,
-  labReq,
-  newVisit = {},
-  docName,
-  lic,
-  ptr,
-  s2,
-}) {
-  const genderChar = gender?.[0]?.toUpperCase() ?? "M";
+function PrintLabRequestButton({ patientId, visitDate }) {
   return (
     <Link
       href={{
         pathname: "/labReq",
         query: {
-          name: encodeURIComponent(name ?? ""),
-          birthday: encodeURIComponent(birthday ?? ""),
-          address: encodeURIComponent(fullAddress ?? ""),
-          sex: encodeURIComponent(genderChar),
-          req: encodeURIComponent(labReq ?? ""),
-          date: encodeURIComponent(newVisit?.visit_date ?? ""),
-          docName: encodeURIComponent(docName ?? ""),
-          lic: encodeURIComponent(lic ?? ""),
-          ptr: encodeURIComponent(ptr ?? ""),
-          s2: encodeURIComponent(s2 ?? ""),
+          patientId: patientId || "",
+          visitDate: visitDate || "",
         },
       }}
     >
@@ -203,39 +128,14 @@ function PrintLabRequestButton({
 }
 
 // Print Medical Form Button
-function PrintMedicalFormButton({
-  name,
-  birthday,
-  gender,
-  newVisit = {},
-  docName,
-  lic,
-  ptr,
-  s2,
-}) {
-  const genderUpper = gender?.toUpperCase() ?? "MALE";
+function PrintMedicalFormButton({ patientId, visitDate }) {
   return (
     <Link
       href={{
         pathname: "/certificate",
         query: {
-          name: encodeURIComponent(name ?? ""),
-          birthday: encodeURIComponent(birthday ?? ""),
-          address: encodeURIComponent(""), // Not used in certificate but kept for compatibility
-          sex: encodeURIComponent(genderUpper),
-          req1: encodeURIComponent(newVisit?.soap?.assessment ?? ""),
-          req2: encodeURIComponent(newVisit?.soap?.plan ?? ""),
-          date: encodeURIComponent(
-            new Date(newVisit?.visit_date ?? new Date()).toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })
-          ),
-          docName: encodeURIComponent(docName ?? ""),
-          lic: encodeURIComponent(lic ?? ""),
-          ptr: encodeURIComponent(ptr ?? ""),
-          s2: encodeURIComponent(s2 ?? ""),
+          patientId: patientId || "",
+          visitDate: visitDate || "",
         },
       }}
     >

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { patientService } from "@/lib/services/patientService";
+import { doctorService } from "@/lib/services/doctorService";
 
 export async function GET(request) {
   try {
@@ -34,14 +35,37 @@ export async function GET(request) {
       );
     }
 
+    // Get doctor info
+    const doctors = await doctorService.getDoctors();
+    const doctor = doctors[0] || {};
+
+    // Build patient address string
+    const addr = patient.contact?.address || {};
+    const addressStr = [addr.street, addr.city, addr.province].filter(Boolean).join(", ") || "";
+
     return NextResponse.json({
+      patient: {
+        name: patient.name || "",
+        birthday: patient.birthday || "",
+        gender: patient.gender || "",
+        address: addressStr,
+      },
+      visit: {
+        date: visit.visit_date || "",
+      },
       prescription: visit.form?.reseta || "",
       labReq: visit.form?.labReq || "",
       assessment: visit.soap?.assessment || "",
       plan: visit.soap?.plan || "",
+      doctor: {
+        name: doctor.name || "",
+        lic: doctor.lic || "",
+        ptr: doctor.ptr || "",
+        s2: doctor.s2 || "",
+      },
     });
   } catch (error) {
-    console.error("Error fetching prescription:", error);
+    console.error("Error fetching print data:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

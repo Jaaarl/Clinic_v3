@@ -2,24 +2,13 @@
 
 import Head from "next/head";
 import { FaPrescription } from "react-icons/fa";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { calculateAge } from "@/lib/utils/dateUtils";
 
-export default function Certi({
-  req1,
-  req2,
-  name,
-  age,
-  gender,
-  address,
-  date,
-  docName,
-  lic,
-  ptr,
-  s2,
-}) {
+export default function Certi({ patientId, visitDate }) {
   const [clinicInfo, setClinicInfo] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [printData, setPrintData] = useState(null);
 
   useEffect(() => {
     const fetchClinicInfo = async () => {
@@ -29,19 +18,51 @@ export default function Certi({
         setClinicInfo(data.clinicInfo);
       } catch (error) {
         console.error("Error fetching clinic info:", error);
+      }
+    };
+
+    const fetchPrintData = async () => {
+      if (!patientId || !visitDate) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const res = await fetch(
+          `/api/print-data?patientId=${patientId}&visitDate=${encodeURIComponent(visitDate)}`
+        );
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+        setPrintData(data);
+      } catch (error) {
+        console.error("Error fetching print data:", error);
       } finally {
         setLoading(false);
       }
     };
 
     fetchClinicInfo();
-  }, []);
+    fetchPrintData();
+  }, [patientId, visitDate]);
 
   if (loading) {
     return <div className="p-4">Loading...</div>;
   }
 
-  // Get first address
+  const name = printData?.patient?.name || "";
+  const birthday = printData?.patient?.birthday || "";
+  const gender = printData?.patient?.gender || "";
+  const address = printData?.patient?.address || "";
+  const date = printData?.visit?.date || "";
+  const docName = printData?.doctor?.name || "";
+  const lic = printData?.doctor?.lic || "";
+  const ptr = printData?.doctor?.ptr || "";
+  const s2 = printData?.doctor?.s2 || "";
+  const req1 = printData?.assessment || "";
+  const req2 = printData?.plan || "";
+
+  const age = calculateAge(birthday);
+
   const primaryAddress = clinicInfo?.addresses?.[0];
   const formatAddress = (addr) => {
     if (!addr) return "CLINIC_ADDRESS";

@@ -204,14 +204,6 @@ export default function EditQueForm({
       {/* Edit Visit Form */}
       <VisitForm
         newVisit={newVisit}
-        name={name}
-        gender={gender}
-        birthday={birthday}
-        fullAddress={fullAddress}
-        docName={docName}
-        lic={lic}
-        ptr={ptr}
-        s2={s2}
         onInputChange={handleInputChange}
         onResetInput={handleResetInput}
         onSubmit={handleSubmit}
