@@ -3,6 +3,7 @@
 
 import Link from "next/link";
 import PrescriptionList from "./PrescriptionList";
+import PrintPrescriptionButton from "./PrintPrescriptionButton";
 import VitalsSection from "./VitalsSection";
 import SOAPSection from "./SOAPSection";
 
@@ -80,28 +81,6 @@ export default function VisitForm({
         </div>
       </form>
     </div>
-  );
-}
-
-// Print Prescription Button
-function PrintPrescriptionButton({ patientId, visitDate }) {
-  return (
-    <Link
-      href={{
-        pathname: "/reseta",
-        query: {
-          patientId: patientId || "",
-          visitDate: visitDate || "",
-        },
-      }}
-    >
-      <button
-        type="button"
-        className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mr-2"
-      >
-        Print Prescription
-      </button>
-    </Link>
   );
 }
 
