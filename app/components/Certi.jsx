@@ -1,7 +1,6 @@
 "use client";
 
 import Head from "next/head";
-import { FaPrescription } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { calculateAge } from "@/lib/utils/dateUtils";
 
@@ -115,7 +114,7 @@ export default function Certi({ patientId, visitDate }) {
               legal matters).
             </div>
             <div className="flex">
-              <div className="mt-auto pt-1 ml-auto font-bold mt-10">
+              <div className="pt-1 ml-auto font-bold mt-10">
                 <p className="font-bold"> {docName}</p>
                 <p>
                   <strong>Lic. #:</strong> {lic}
